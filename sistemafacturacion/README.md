@@ -57,3 +57,4 @@ ESTRUCTURA DE CARPETAS
   - carpeta services para la lógica de negocio y servicios de la aplicación.
 * src/main/resources: Contendrá los archivos de configuración, como el archivo de propiedades para la conexión a la base de datos y otros recursos necesarios.
 * src/main/webapp: Contendrá los archivos JSP, XHTML y otros recursos web, como imágenes y hojas de estilo CSS. 
+
