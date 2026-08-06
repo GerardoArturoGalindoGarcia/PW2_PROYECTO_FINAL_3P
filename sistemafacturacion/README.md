@@ -48,6 +48,14 @@ LIBRERIAS Y TECNOLOGIAS
 *   No utilizar ningun otro framework de frontend, unicamente controles de primefaces.
 *   Java 25 para backend con estructura MVC (utilizando managed beans) y Singleton para conexión a base de datos (jdbc).
 
+DETALLE DE MVC
+
+* Crear interfaces java para definir el contrato de la vista. el controlador y el modelo, estos deben de definir las operaciones aceptadas a ser implementadas por cada capa.
+* Crear las implementaciones de cada etapa del MVC, estas deben de implementar las interfaces definidas en el paso anterior.
+* las vistas serian los beans, los cuales deberian de implementar la interfaz de la vista.
+* Crea un package para separar las diferentes capas del MVC, por ejemplo: controlador, vista, modelo, servicios, etc.
+
+
 ESTRUCTURA DE CARPETAS
 
 * src/main/java: Contendrá el código fuente de la aplicación, incluyendo los managed beans, controladores y modelos.
