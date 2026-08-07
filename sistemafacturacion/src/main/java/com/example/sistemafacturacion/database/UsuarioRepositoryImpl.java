@@ -55,15 +55,21 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     @Override
     public Usuario obtenerPorNombreUsuario(String nombreUsuario) {
         String sql = "SELECT * FROM Usuarios WHERE nombreUsuario = ?";
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, nombreUsuario);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToUsuario(rs);
+        try {
+            Connection conn = dbConnection.getConnection();
+            if (conn == null) {
+                throw new SQLException("Conexión a la base de datos es nula");
+            }
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, nombreUsuario);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return mapResultSetToUsuario(rs);
+                    }
                 }
             }
         } catch (SQLException e) {
+            System.err.println("ERROR al obtener usuario por nombre: " + e.getMessage());
             e.printStackTrace();
         }
         return null;

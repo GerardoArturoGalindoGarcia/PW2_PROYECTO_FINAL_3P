@@ -1,5 +1,6 @@
 package com.example.sistemafacturacion.database;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,16 +9,61 @@ import java.sql.Statement;
 public class DatabaseConnection {
     private static DatabaseConnection instance;
     private Connection connection;
-    private static final String DB_URL = "jdbc:sqlite:sistemafacturacion.db";
+    private static final String DB_NAME = "sistemafacturacion.db";
+    private static String DB_URL;
 
-    private DatabaseConnection() {
+    static {
         try {
+            // Cargar el driver SQLite
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection(DB_URL);
-            inicializarBaseDatos();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ClassNotFoundException e) {
+            System.err.println("ERROR: No se encontró el driver SQLite");
             e.printStackTrace();
         }
+    }
+
+    private DatabaseConnection() {
+        inicializarConexion();
+    }
+
+    private void inicializarConexion() {
+        try {
+            // Construir la ruta a la base de datos
+            String dbPath = construirRutaBaseDatos();
+            DB_URL = "jdbc:sqlite:" + dbPath;
+            System.out.println("Conectando a: " + DB_URL);
+            
+            connection = DriverManager.getConnection(DB_URL);
+            System.out.println("Conexión establecida exitosamente");
+            
+            inicializarBaseDatos();
+        } catch (SQLException e) {
+            System.err.println("ERROR al conectar a la base de datos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private String construirRutaBaseDatos() {
+        // Intentar varias ubicaciones
+        String[] ubicaciones = {
+            DB_NAME, // Directorio actual
+            "sistemafacturacion/" + DB_NAME, // Subcarpeta sistemafacturacion
+            "./target/sistemafacturacion/" + DB_NAME, // Maven target
+            System.getProperty("user.dir") + File.separator + DB_NAME,
+            System.getProperty("user.dir") + File.separator + "sistemafacturacion" + File.separator + DB_NAME
+        };
+        
+        for (String ubicacion : ubicaciones) {
+            File file = new File(ubicacion);
+            if (file.exists()) {
+                System.out.println("Base de datos encontrada en: " + file.getAbsolutePath());
+                return file.getAbsolutePath();
+            }
+        }
+        
+        // Si no existe en ningún lado, usar la primera ubicación (se creará)
+        System.out.println("Base de datos no encontrada, se creará en: " + System.getProperty("user.dir"));
+        return System.getProperty("user.dir") + File.separator + DB_NAME;
     }
 
     public static synchronized DatabaseConnection getInstance() {
@@ -31,8 +77,10 @@ public class DatabaseConnection {
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(DB_URL);
+                System.out.println("Reconectado a la base de datos");
             }
         } catch (SQLException e) {
+            System.err.println("ERROR al obtener conexión: " + e.getMessage());
             e.printStackTrace();
         }
         return connection;
