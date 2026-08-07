@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<head>
+    <title>Gestión de Clientes</title>
+    <h:outputStylesheet name="css/bootstrap.min.css"/>
+</head>
+
+<body>
+    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
+        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
+    </div>
+    
+    <div class="container" style="padding: 30px;">
+        <h1>Gestión de Clientes</h1>
+        
+        <h:form id="formCliente">
+            <p:messages id="messages" showDetail="true" closable="true"/>
+            
+            <p:panel header="Agregar Nuevo Cliente" styleClass="card" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <p:inputText value="#{clienteBean.nombre}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>RTN:</label>
+                    <p:inputText value="#{clienteBean.rtn}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <p:inputText value="#{clienteBean.email}" type="email"/>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono:</label>
+                    <p:inputText value="#{clienteBean.telefono}"/>
+                </div>
+                <div class="form-group">
+                    <label>Dirección:</label>
+                    <p:inputText value="#{clienteBean.direccion}"/>
+                </div>
+                
+                <p:commandButton value="Guardar" actionListener="#{clienteBean.guardarCliente()}"
+                                update="messages,dataTableClientes" icon="pi pi-save"/>
+                <p:commandButton value="Limpiar" actionListener="#{clienteBean.limpiarFormulario()}"
+                                update="formCliente" type="button" style="margin-left: 10px;"/>
+            </p:panel>
+            
+            <p:dataTable id="dataTableClientes" value="#{clienteBean.listaClientes}" var="cliente"
+                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10">
+                
+                <p:column headerText="ID" sortBy="#{cliente.idCliente}">
+                    <h:outputText value="#{cliente.idCliente}"/>
+                </p:column>
+                
+                <p:column headerText="Nombre" sortBy="#{cliente.nombre}">
+                    <h:outputText value="#{cliente.nombre}"/>
+                </p:column>
+                
+                <p:column headerText="RTN">
+                    <h:outputText value="#{cliente.rtn}"/>
+                </p:column>
+                
+                <p:column headerText="Email">
+                    <h:outputText value="#{cliente.email}"/>
+                </p:column>
+                
+                <p:column headerText="Teléfono">
+                    <h:outputText value="#{cliente.telefono}"/>
+                </p:column>
+                
+                <p:column headerText="Acciones" style="width:150px;">
+                    <p:commandButton value="Editar" update="formCliente" 
+                                    actionListener="#{clienteBean.setClienteSeleccionado(cliente)}"
+                                    icon="pi pi-pencil" style="margin-right: 5px;"/>
+                    <p:commandButton value="Eliminar" actionListener="#{clienteBean.setClienteSeleccionado(cliente)}"
+                                    actionListener="#{clienteBean.eliminarCliente()}"
+                                    update="messages,dataTableClientes" icon="pi pi-trash"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+</body>
+</html>

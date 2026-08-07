@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<head>
+    <title>Gestión de Usuarios</title>
+    <h:outputStylesheet name="css/bootstrap.min.css"/>
+</head>
+
+<body>
+    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
+        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
+    </div>
+    
+    <div class="container" style="padding: 30px;">
+        <h1>Gestión de Usuarios</h1>
+        
+        <h:form id="formUsuario">
+            <p:messages id="messages" showDetail="true" closable="true"/>
+            
+            <p:panel header="Agregar Nuevo Usuario" styleClass="card" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label>Nombre Usuario:</label>
+                    <p:inputText value="#{usuarioBean.nombreUsuario}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <p:password value="#{usuarioBean.contrasena}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <p:inputText value="#{usuarioBean.nombre}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Apellido:</label>
+                    <p:inputText value="#{usuarioBean.apellido}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <p:inputText value="#{usuarioBean.email}" type="email" required="true"/>
+                </div>
+                
+                <p:commandButton value="Guardar" actionListener="#{usuarioBean.guardarUsuario()}"
+                                update="messages,dataTableUsuarios" icon="pi pi-save"/>
+                <p:commandButton value="Limpiar" actionListener="#{usuarioBean.limpiarFormulario()}"
+                                update="formUsuario" type="button" style="margin-left: 10px;"/>
+            </p:panel>
+            
+            <p:dataTable id="dataTableUsuarios" value="#{usuarioBean.listaUsuarios}" var="usuario"
+                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10"
+                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        rowsPerPageTemplate="5,10,15">
+                
+                <p:column headerText="ID" sortBy="#{usuario.idUsuario}">
+                    <h:outputText value="#{usuario.idUsuario}"/>
+                </p:column>
+                
+                <p:column headerText="Usuario" sortBy="#{usuario.nombreUsuario}">
+                    <h:outputText value="#{usuario.nombreUsuario}"/>
+                </p:column>
+                
+                <p:column headerText="Nombre">
+                    <h:outputText value="#{usuario.nombre} #{usuario.apellido}"/>
+                </p:column>
+                
+                <p:column headerText="Email">
+                    <h:outputText value="#{usuario.email}"/>
+                </p:column>
+                
+                <p:column headerText="Estado">
+                    <h:outputText value="#{usuario.estado}"/>
+                </p:column>
+                
+                <p:column headerText="Acciones" style="width:150px;">
+                    <p:commandButton value="Editar" update="formUsuario" 
+                                    actionListener="#{usuarioBean.setUsuarioSeleccionado(usuario)}"
+                                    icon="pi pi-pencil" style="margin-right: 5px;"/>
+                    <p:commandButton value="Eliminar" actionListener="#{usuarioBean.setUsuarioSeleccionado(usuario)}"
+                                    actionListener="#{usuarioBean.eliminarUsuario()}"
+                                    update="messages,dataTableUsuarios" icon="pi pi-trash"
+                                    oncomplete="PF('confirmDialog').show()"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+</body>
+</html>

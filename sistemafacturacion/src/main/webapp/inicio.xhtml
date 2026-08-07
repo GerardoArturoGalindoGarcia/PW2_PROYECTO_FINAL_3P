@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<head>
+    <title>Sistema de Facturación - Inicio</title>
+    <h:outputStylesheet name="css/bootstrap.min.css"/>
+    <style>
+        body { background-color: #f5f5f5; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white; }
+        .navbar h1 { margin: 0; display: inline-block; }
+        .navbar .logout { float: right; }
+        .navbar a { color: white; text-decoration: none; margin-left: 20px; }
+        .navbar a:hover { text-decoration: underline; }
+        .container { padding: 30px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .card h2 { color: #667eea; margin-top: 0; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .module-card { padding: 30px; text-align: center; cursor: pointer; transition: transform 0.3s; }
+        .module-card:hover { transform: translateY(-5px); }
+        .module-card i { font-size: 48px; color: #667eea; margin-bottom: 15px; }
+        .module-card h3 { margin: 15px 0 10px; }
+        .module-card p { color: #666; margin: 0; }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <h1>📊 Sistema de Facturación</h1>
+        <div class="logout">
+            <h:form style="display: inline;">
+                <p:commandButton value="Cerrar Sesión" actionListener="#{loginBean.cerrarSesion()}" 
+                                ajax="false" immediate="true"/>
+            </h:form>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h2>Bienvenido al Sistema de Facturación</h2>
+            <p>Selecciona un módulo para comenzar</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="card module-card">
+                <h3>👥 Usuarios</h3>
+                <p:button value="Ir a Usuarios" outcome="usuarios" icon="pi pi-users"/>
+            </div>
+            
+            <div class="card module-card">
+                <h3>🏢 Clientes</h3>
+                <p:button value="Ir a Clientes" outcome="clientes" icon="pi pi-user"/>
+            </div>
+            
+            <div class="card module-card">
+                <h3>📦 Productos</h3>
+                <p:button value="Ir a Productos" outcome="productos" icon="pi pi-box"/>
+            </div>
+            
+            <div class="card module-card">
+                <h3>🧾 Facturas</h3>
+                <p:button value="Ir a Facturas" outcome="facturas" icon="pi pi-file"/>
+            </div>
+            
+            <div class="card module-card">
+                <h3>🔐 CAI/RTN</h3>
+                <p:button value="Ir a CAI" outcome="cai" icon="pi pi-key"/>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<head>
+    <title>Gestión de CAI/RTN</title>
+    <h:outputStylesheet name="css/bootstrap.min.css"/>
+</head>
+
+<body>
+    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
+        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
+    </div>
+    
+    <div class="container" style="padding: 30px;">
+        <h1>Gestión de CAI y Rangos de Facturación</h1>
+        
+        <h:form id="formCAI">
+            <p:messages id="messages" showDetail="true" closable="true"/>
+            
+            <p:panel header="Registrar Nuevo CAI" styleClass="card" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label>Código CAI:</label>
+                    <p:inputText value="#{caiBean.codigoCAI}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>RTN:</label>
+                    <p:inputText value="#{caiBean.rtn}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Rango Inicial:</label>
+                    <p:inputNumber value="#{caiBean.rangoInicial}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Rango Final:</label>
+                    <p:inputNumber value="#{caiBean.rangoFinal}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Emisión:</label>
+                    <p:calendar value="#{caiBean.fechaEmision}" pattern="dd/MM/yyyy" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Vencimiento:</label>
+                    <p:calendar value="#{caiBean.fechaVencimiento}" pattern="dd/MM/yyyy" required="true"/>
+                </div>
+                
+                <p:commandButton value="Guardar" actionListener="#{caiBean.guardarCAI()}"
+                                update="messages,dataTableCAI" icon="pi pi-save"/>
+                <p:commandButton value="Limpiar" actionListener="#{caiBean.limpiarFormulario()}"
+                                update="formCAI" type="button" style="margin-left: 10px;"/>
+            </p:panel>
+            
+            <p:dataTable id="dataTableCAI" value="#{caiBean.listaCAI}" var="cai"
+                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10">
+                
+                <p:column headerText="ID" sortBy="#{cai.idCAI}">
+                    <h:outputText value="#{cai.idCAI}"/>
+                </p:column>
+                
+                <p:column headerText="CAI" sortBy="#{cai.cai}">
+                    <h:outputText value="#{cai.cai}"/>
+                </p:column>
+                
+                <p:column headerText="RTN">
+                    <h:outputText value="#{cai.rtn}"/>
+                </p:column>
+                
+                <p:column headerText="Rango Inicial">
+                    <h:outputText value="#{cai.rangoInicial}"/>
+                </p:column>
+                
+                <p:column headerText="Rango Final">
+                    <h:outputText value="#{cai.rangoFinal}"/>
+                </p:column>
+                
+                <p:column headerText="Siguiente Factura">
+                    <h:outputText value="#{cai.siguienteFactura}"/>
+                </p:column>
+                
+                <p:column headerText="Estado">
+                    <h:outputText value="#{cai.estado}"/>
+                </p:column>
+                
+                <p:column headerText="Acciones" style="width:150px;">
+                    <p:commandButton value="Editar" update="formCAI" 
+                                    actionListener="#{caiBean.setCaiSeleccionado(cai)}"
+                                    icon="pi pi-pencil" style="margin-right: 5px;"/>
+                    <p:commandButton value="Eliminar" actionListener="#{caiBean.setCaiSeleccionado(cai)}"
+                                    actionListener="#{caiBean.eliminarCAI()}"
+                                    update="messages,dataTableCAI" icon="pi pi-trash"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+</body>
+</html>

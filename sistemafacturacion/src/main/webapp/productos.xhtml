@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<head>
+    <title>Gestión de Productos</title>
+    <h:outputStylesheet name="css/bootstrap.min.css"/>
+</head>
+
+<body>
+    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
+        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
+    </div>
+    
+    <div class="container" style="padding: 30px;">
+        <h1>Gestión de Productos</h1>
+        
+        <h:form id="formProducto">
+            <p:messages id="messages" showDetail="true" closable="true"/>
+            
+            <p:panel header="Agregar Nuevo Producto" styleClass="card" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <p:inputText value="#{productoBean.nombre}" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <p:inputTextarea value="#{productoBean.descripcion}" rows="3"/>
+                </div>
+                <div class="form-group">
+                    <label>Precio Venta:</label>
+                    <p:inputNumber value="#{productoBean.precioVenta}" symbol="$" decimalPlaces="2" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label>Stock:</label>
+                    <p:inputNumber value="#{productoBean.stock}" required="true"/>
+                </div>
+                
+                <p:commandButton value="Guardar" actionListener="#{productoBean.guardarProducto()}"
+                                update="messages,dataTableProductos" icon="pi pi-save"/>
+                <p:commandButton value="Limpiar" actionListener="#{productoBean.limpiarFormulario()}"
+                                update="formProducto" type="button" style="margin-left: 10px;"/>
+            </p:panel>
+            
+            <p:dataTable id="dataTableProductos" value="#{productoBean.listaProductos}" var="producto"
+                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10">
+                
+                <p:column headerText="ID" sortBy="#{producto.idProducto}">
+                    <h:outputText value="#{producto.idProducto}"/>
+                </p:column>
+                
+                <p:column headerText="Nombre" sortBy="#{producto.nombre}">
+                    <h:outputText value="#{producto.nombre}"/>
+                </p:column>
+                
+                <p:column headerText="Descripción">
+                    <h:outputText value="#{producto.descripcion}"/>
+                </p:column>
+                
+                <p:column headerText="Precio">
+                    <h:outputText value="#{producto.precioVenta}">
+                        <f:convertNumber pattern="$#,##0.00"/>
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Stock">
+                    <h:outputText value="#{producto.stock}"/>
+                </p:column>
+                
+                <p:column headerText="Acciones" style="width:150px;">
+                    <p:commandButton value="Editar" update="formProducto" 
+                                    actionListener="#{productoBean.setProductoSeleccionado(producto)}"
+                                    icon="pi pi-pencil" style="margin-right: 5px;"/>
+                    <p:commandButton value="Eliminar" actionListener="#{productoBean.setProductoSeleccionado(producto)}"
+                                    actionListener="#{productoBean.eliminarProducto()}"
+                                    update="messages,dataTableProductos" icon="pi pi-trash"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </div>
+</body>
+</html>
