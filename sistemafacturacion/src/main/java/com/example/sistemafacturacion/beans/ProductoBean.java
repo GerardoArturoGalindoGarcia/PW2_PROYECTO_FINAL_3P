@@ -43,7 +43,7 @@ public class ProductoBean implements ProductoViewModel, Serializable {
             producto.setEstado("activo");
             productoInteractor.registrarProducto(producto);
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Éxito", "Producto registrado correctamente"));
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Producto registrado correctamente"));
             limpiarFormulario();
             cargarProductos();
         } catch (Exception e) {
@@ -56,9 +56,15 @@ public class ProductoBean implements ProductoViewModel, Serializable {
     public void actualizarProducto() {
         if (productoSeleccionado != null) {
             try {
+                productoSeleccionado.setNombre(nombre);
+                productoSeleccionado.setDescripcion(descripcion);
+                productoSeleccionado.setPrecioVenta(precioVenta);
+                productoSeleccionado.setStock(stock);
                 productoInteractor.actualizarProducto(productoSeleccionado);
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage("Éxito", "Producto actualizado correctamente"));
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Producto actualizado correctamente"));
+                limpiarFormulario();
+                productoSeleccionado = null;
                 cargarProductos();
             } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -73,7 +79,8 @@ public class ProductoBean implements ProductoViewModel, Serializable {
             try {
                 productoInteractor.eliminarProducto(productoSeleccionado.getIdProducto());
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage("Éxito", "Producto eliminado correctamente"));
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Producto eliminado correctamente"));
+                productoSeleccionado = null;
                 cargarProductos();
             } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -93,6 +100,28 @@ public class ProductoBean implements ProductoViewModel, Serializable {
         descripcion = null;
         precioVenta = 0;
         stock = 0;
+        productoSeleccionado = null;
+    }
+
+    public void seleccionarProducto(Producto producto) {
+        this.productoSeleccionado = producto;
+        this.nombre = producto.getNombre();
+        this.descripcion = producto.getDescripcion();
+        this.precioVenta = producto.getPrecioVenta();
+        this.stock = producto.getStock();
+    }
+
+    public void prepararYEliminarProducto(Producto producto) {
+        seleccionarProducto(producto);
+        eliminarProducto();
+    }
+
+    public void guardarOActualizarProducto() {
+        if (productoSeleccionado != null) {
+            actualizarProducto();
+        } else {
+            guardarProducto();
+        }
     }
 
     @Override

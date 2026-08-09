@@ -38,10 +38,11 @@
                     <p:inputNumber value="#{productoBean.stock}" required="true"/>
                 </div>
                 
-                <p:commandButton value="Guardar" actionListener="#{productoBean.guardarProducto()}"
-                                update="messages,dataTableProductos" icon="pi pi-save"/>
+                <p:commandButton value="Guardar"
+                                 actionListener="#{productoBean.guardarOActualizarProducto()}"
+                                 update="messages,dataTableProductos,formProducto" icon="pi pi-save"/>
                 <p:commandButton value="Limpiar" actionListener="#{productoBean.limpiarFormulario()}"
-                                update="formProducto" type="button" style="margin-left: 10px;"/>
+                                 update="formProducto" process="@this" style="margin-left: 10px;"/>
             </p:panel>
             
             <p:dataTable id="dataTableProductos" value="#{productoBean.listaProductos}" var="producto"
@@ -70,11 +71,17 @@
                 </p:column>
                 
                 <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton value="Editar" update="formProducto" 
-                                    actionListener="#{productoBean.setProductoSeleccionado(producto)}"
-                                    icon="pi pi-pencil" style="margin-right: 5px;"/>
-                    <p:commandButton value="Eliminar" actionListener="#{productoBean.setProductoSeleccionado(producto)}"
-                                    update="messages,dataTableProductos"
+                    <p:commandButton value="Editar"
+                                     update="formProducto"
+                                     process="@this"
+                                     actionListener="#{productoBean.seleccionarProducto(producto)}"
+                                     icon="pi pi-pencil"
+                                     style="margin-right: 5px;"/>
+                    <p:commandButton value="Eliminar"
+                                     actionListener="#{productoBean.prepararYEliminarProducto(producto)}"
+                                     onclick="return confirm('¿Está seguro de que desea eliminar este producto?');"
+                                     update="messages,dataTableProductos,formProducto"
+                                     process="@this"
                                      icon="pi pi-trash"/>
                 </p:column>
             </p:dataTable>

@@ -84,7 +84,7 @@
                     <p:commandButton
                             value="Eliminar" process="@this"
                             onclick="return confirm('¿Está seguro de que desea eliminar este cliente?');"
-                            actionListener="#{clienteBean.eliminarCliente()}"
+                            actionListener="#{clienteBean.eliminarCliente(cliente)}"
                             update="messages,dataTableClientes"
                             icon="pi pi-trash"/>
                 </p:column>

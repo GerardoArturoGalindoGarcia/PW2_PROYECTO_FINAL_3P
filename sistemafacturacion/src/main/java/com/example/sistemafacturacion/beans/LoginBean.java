@@ -41,12 +41,14 @@ public class LoginBean implements Serializable {
         }
     }
 
-    public void cerrarSesion() {
-        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-                .getExternalContext().getSession(false);
+    public String cerrarSesion() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         if (session != null) {
             session.invalidate();
         }
+        context.getExternalContext().invalidateSession();
+        return "login?faces-redirect=true";
     }
 
     public String getNombreUsuario() { return nombreUsuario; }
