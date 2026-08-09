@@ -42,8 +42,9 @@
                     <p:inputText value="#{clienteBean.direccion}"/>
                 </div>
                 
-                <p:commandButton value="Guardar" actionListener="#{clienteBean.guardarCliente()}"
-                                update="messages,dataTableClientes" icon="pi pi-save"/>
+                <p:commandButton value="Guardar" 
+                                actionListener="#{clienteBean.guardarOActualizarCliente()}"
+                                update="messages,dataTableClientes,formCliente" icon="pi pi-save"/>
                 <p:commandButton value="Limpiar" actionListener="#{clienteBean.limpiarFormulario()}"
                                 update="formCliente" process="@this" style="margin-left: 10px;"/>
             </p:panel>
@@ -74,16 +75,17 @@
                 <p:column headerText="Acciones" style="width:150px;">
                     <p:commandButton
                             value="Editar"
-                            actionListener="#{clienteBean.seleccionarCliente(cliente)}"
                             update="formCliente"
+                            process="@this"
+                            actionListener="#{clienteBean.seleccionarCliente(cliente)}"
                             icon="pi pi-pencil"
                             style="margin-right: 5px;"/>
 
                     <p:commandButton
-                            value="Eliminar"
-                            actionListener="#{clienteBean.setClienteSeleccionado(cliente)}"
+                            value="Eliminar" process="@this"
                             onclick="return confirm('¿Está seguro de que desea eliminar este cliente?');"
-                            update="messages dataTableClientes"
+                            actionListener="#{clienteBean.eliminarCliente(cliente)}"
+                            update="messages,dataTableClientes"
                             icon="pi pi-trash"/>
                 </p:column>
             </p:dataTable>

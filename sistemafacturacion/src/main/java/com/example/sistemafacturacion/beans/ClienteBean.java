@@ -1,6 +1,7 @@
 package com.example.sistemafacturacion.beans;
 
 import com.example.sistemafacturacion.data.Cliente;
+import com.example.sistemafacturacion.data.Usuario;
 import com.example.sistemafacturacion.interfaces.interactor.ClienteInteractor;
 import com.example.sistemafacturacion.interfaces.viewmodel.ClienteViewModel;
 import com.example.sistemafacturacion.services.ClienteService;
@@ -127,7 +128,6 @@ public class ClienteBean implements ClienteViewModel, Serializable {
 
     @Override
     public void eliminarCliente() {
-
         if (clienteSeleccionado != null) {
 
             try {
@@ -162,6 +162,11 @@ public class ClienteBean implements ClienteViewModel, Serializable {
         }
     }
 
+    public void eliminarCliente(Cliente cliente) {
+        this.clienteSeleccionado = cliente;
+        eliminarCliente();
+    }
+
 
     @Override
     public void buscarClientes(String criterio) {
@@ -179,6 +184,15 @@ public class ClienteBean implements ClienteViewModel, Serializable {
         direccion = null;
 
         clienteSeleccionado = null;
+    }
+
+
+    public void guardarOActualizarCliente() {
+        if (clienteSeleccionado != null) {
+            actualizarCliente();
+        } else {
+            guardarCliente();
+        }
     }
 
 

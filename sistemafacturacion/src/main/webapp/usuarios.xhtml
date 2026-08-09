@@ -43,10 +43,11 @@
                     <p:inputText value="#{usuarioBean.email}" type="email" required="true"/>
                 </div>
 
-                <p:commandButton value="Guardar" actionListener="#{usuarioBean.guardarUsuario()}"
-                                update="messages,dataTableUsuarios" icon="pi pi-save"/>
+                <p:commandButton value="#{usuarioBean.usuarioSeleccionado != null ? 'Actualizar' : 'Guardar'}"
+                                actionListener="#{usuarioBean.guardarUsuario()}"
+                                update="messages,formUsuario" icon="pi pi-save"/>
                 <p:commandButton value="Limpiar" actionListener="#{usuarioBean.limpiarFormulario()}"
-                                update="formUsuario" type="button" style="margin-left: 10px;"/>
+                                update="formUsuario" process="@this" immediate="true" style="margin-left: 10px;"/>
             </p:panel>
 
             <p:dataTable id="dataTableUsuarios" value="#{usuarioBean.listaUsuarios}" var="usuario"
@@ -75,12 +76,12 @@
                 </p:column>
 
                 <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton value="Editar" update="formUsuario"
-                                    actionListener="#{usuarioBean.setUsuarioSeleccionado(usuario)}"
+                    <p:commandButton value="Editar" update="formUsuario" process="@this"
+                                    actionListener="#{usuarioBean.editarUsuario(usuario)}"
                                     icon="pi pi-pencil" style="margin-right: 5px;"/>
-                    <p:commandButton value="Eliminar"
-                                     actionListener="#{usuarioBean.setUsuarioSeleccionado(usuario)}"
-                                     update="messages,dataTableUsuarios"
+                    <p:commandButton value="Eliminar" process="@this"
+                                     actionListener="#{usuarioBean.eliminarUsuario(usuario)}"
+                                     update="messages,formUsuario"
                                      icon="pi pi-trash"/>
                 </p:column>
             </p:dataTable>

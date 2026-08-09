@@ -35,6 +35,11 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
 
     @Override
     public void guardarUsuario() {
+        // Si hay un usuario seleccionado (modo edición), actualiza en vez de insertar
+        if (usuarioSeleccionado != null) {
+            actualizarUsuario();
+            return;
+        }
         try {
             Usuario usuario = new Usuario();
             usuario.setNombreUsuario(nombreUsuario);
@@ -55,13 +60,29 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
         }
     }
 
+    // Carga los datos del usuario elegido en la fila hacia los campos del formulario (modo edición)
+    public void editarUsuario(Usuario usuario) {
+        this.usuarioSeleccionado = usuario;
+        this.nombreUsuario = usuario.getNombreUsuario();
+        this.contrasena = usuario.getContrasena();
+        this.nombre = usuario.getNombre();
+        this.apellido = usuario.getApellido();
+        this.email = usuario.getEmail();
+    }
+
     @Override
     public void actualizarUsuario() {
         if (usuarioSeleccionado != null) {
             try {
+                usuarioSeleccionado.setNombreUsuario(nombreUsuario);
+                usuarioSeleccionado.setContrasena(contrasena);
+                usuarioSeleccionado.setNombre(nombre);
+                usuarioSeleccionado.setApellido(apellido);
+                usuarioSeleccionado.setEmail(email);
                 usuarioInteractor.actualizarUsuario(usuarioSeleccionado);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage("Éxito", "Usuario actualizado correctamente"));
+                limpiarFormulario();
                 cargarUsuarios();
             } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -77,6 +98,7 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
                 usuarioInteractor.eliminarUsuario(usuarioSeleccionado.getIdUsuario());
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage("Éxito", "Usuario eliminado correctamente"));
+                limpiarFormulario();
                 cargarUsuarios();
             } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -85,8 +107,15 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
         }
     }
 
+    // Sobrecarga usada desde el botón "Eliminar" de la tabla: fija la selección y borra en un solo paso
+    public void eliminarUsuario(Usuario usuario) {
+        this.usuarioSeleccionado = usuario;
+        eliminarUsuario();
+    }
+
     @Override
     public void limpiarFormulario() {
+        usuarioSeleccionado = null;
         nombreUsuario = null;
         contrasena = null;
         nombre = null;
