@@ -56,31 +56,86 @@ public class CAIBean implements Serializable {
     }
 
     public void actualizarCAI() {
+
         if (caiSeleccionado != null) {
+
             try {
+
+                caiSeleccionado.setCai(codigoCAI);
+                caiSeleccionado.setRtn(rtn);
+                caiSeleccionado.setRangoInicial(rangoInicial);
+                caiSeleccionado.setRangoFinal(rangoFinal);
+                caiSeleccionado.setFechaEmision(fechaEmision);
+                caiSeleccionado.setFechaVencimiento(fechaVencimiento);
+
                 caiInteractor.actualizarCAI(caiSeleccionado);
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage("Éxito", "CAI actualizado correctamente"));
+
+                FacesContext.getCurrentInstance().addMessage(
+                        null,
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_INFO,
+                                "Éxito",
+                                "CAI actualizado correctamente"
+                        )
+                );
+
+                limpiarFormulario();
+                caiSeleccionado = null;
                 cargarCAI();
+
             } catch (Exception e) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+
+                FacesContext.getCurrentInstance().addMessage(
+                        null,
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR,
+                                "Error",
+                                e.getMessage()
+                        )
+                );
             }
         }
     }
 
     public void eliminarCAI() {
+
         if (caiSeleccionado != null) {
+
             try {
-                caiInteractor.eliminarCAI(caiSeleccionado.getIdCAI());
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage("Éxito", "CAI eliminado correctamente"));
+
+                caiInteractor.eliminarCAI(
+                        caiSeleccionado.getIdCAI()
+                );
+
+                FacesContext.getCurrentInstance().addMessage(
+                        null,
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_INFO,
+                                "Éxito",
+                                "CAI eliminado correctamente"
+                        )
+                );
+
+                caiSeleccionado = null;
                 cargarCAI();
+
             } catch (Exception e) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+
+                FacesContext.getCurrentInstance().addMessage(
+                        null,
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR,
+                                "Error",
+                                e.getMessage()
+                        )
+                );
             }
         }
+    }
+
+    public void eliminarCAI(CAI cai) {
+        this.setCaiSeleccionado(cai);
+        eliminarCAI();
     }
 
     public void limpiarFormulario() {
@@ -90,6 +145,25 @@ public class CAIBean implements Serializable {
         rangoFinal = 0;
         fechaEmision = null;
         fechaVencimiento = null;
+    }
+
+    public void guardarOActualizarCAI(){
+        if(caiSeleccionado == null){
+            actualizarCAI();
+        } else {
+            guardarCAI();
+        }
+    }
+
+    public void seleccionarCai(CAI cai){
+        this.caiSeleccionado = cai;
+
+        this.codigoCAI = cai.getCai();
+        this.rtn = cai.getRtn();
+        this.rangoInicial = cai.getRangoInicial();
+        this.rangoFinal = cai.getRangoFinal();
+        this.fechaEmision = cai.getFechaEmision();
+        this.fechaVencimiento = cai.getFechaVencimiento();
     }
 
     // Getters and Setters

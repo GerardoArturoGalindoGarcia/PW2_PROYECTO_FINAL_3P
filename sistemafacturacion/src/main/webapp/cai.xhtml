@@ -47,10 +47,10 @@
                     <p:calendar value="#{caiBean.fechaVencimiento}" pattern="dd/MM/yyyy" required="true"/>
                 </div>
                 
-                <p:commandButton value="Guardar" actionListener="#{caiBean.guardarCAI()}"
-                                update="messages,dataTableCAI" icon="pi pi-save"/>
+                <p:commandButton value="Guardar" actionListener="#{caiBean.guardarOActualizarCAI()}"
+                                update="messages,dataTableCAI,formCAI" icon="pi pi-save"/>
                 <p:commandButton value="Limpiar" actionListener="#{caiBean.limpiarFormulario()}"
-                                update="formCAI" type="button" style="margin-left: 10px;"/>
+                                update="formCAI" process="@this" style="margin-left: 10px;"/>
             </p:panel>
             
             <p:dataTable id="dataTableCAI" value="#{caiBean.listaCAI}" var="cai"
@@ -85,10 +85,16 @@
                 </p:column>
                 
                 <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton value="Editar" update="formCAI" 
-                                    actionListener="#{caiBean.setCaiSeleccionado(cai)}"
+                    <p:commandButton value="Editar"
+                                     update="formCAI"
+                                     process="@this"
+                                    actionListener="#{caiBean.seleccionarCai(cai)}"
                                     icon="pi pi-pencil" style="margin-right: 5px;"/>
-                    <p:commandButton value="Eliminar" actionListener="#{caiBean.setCaiSeleccionado(cai)}"
+
+                    <p:commandButton value="Eliminar"
+                                     process="@this"
+                                     onclick="return confirm('¿Está seguro de que desea eliminar este CAI?');"
+                                     actionListener="#{caiBean.eliminarCAI(cai)}"
                                    update="messages,dataTableCAI" icon="pi pi-trash"/>
                 </p:column>
             </p:dataTable>

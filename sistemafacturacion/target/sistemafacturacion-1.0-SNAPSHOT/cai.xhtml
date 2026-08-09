@@ -85,10 +85,16 @@
                 </p:column>
                 
                 <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton value="Editar" update="formCAI" 
-                                    actionListener="#{caiBean.setCaiSeleccionado(cai)}"
+                    <p:commandButton value="Editar"
+                                     update="formCAI"
+                                     process="@this"
+                                    actionListener="#{caiBean.seleccionarCai(cai)}"
                                     icon="pi pi-pencil" style="margin-right: 5px;"/>
-                    <p:commandButton value="Eliminar" actionListener="#{caiBean.setCaiSeleccionado(cai)}"
+
+                    <p:commandButton value="Eliminar"
+                                     process="@this"
+                                     onclick="return confirm('¿Está seguro de que desea eliminar este CAI?');"
+                                     actionListener="#{caiBean.eliminarCAI(cai)}"
                                    update="messages,dataTableCAI" icon="pi pi-trash"/>
                 </p:column>
             </p:dataTable>
