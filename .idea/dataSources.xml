@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="sistemafacturacion.db" uuid="13494b71-4bad-46de-94c0-2ec7671f3e7a">
+    <data-source source="LOCAL" name="sistemafacturacion.db" uuid="de6e787e-2c63-4de5-9a93-f0a4ce6b316d">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\sistemafacturacion.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Program Files\Apache Software Foundation\Tomcat 11.0\bin\sistemafacturacion.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
