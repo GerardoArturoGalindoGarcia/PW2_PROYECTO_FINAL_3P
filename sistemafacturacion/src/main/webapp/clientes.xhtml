@@ -1,17 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="jakarta.faces.html"
       xmlns:p="http://primefaces.org/ui">
 
-<head>
+<h:head>
     <title>Gestión de Clientes</title>
     <h:outputStylesheet name="css/bootstrap.min.css"/>
-</head>
+</h:head>
 
-<body>
+<h:body>
     <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
         <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
     </div>
@@ -77,12 +75,13 @@
                     <p:commandButton value="Editar" update="formCliente" 
                                     actionListener="#{clienteBean.setClienteSeleccionado(cliente)}"
                                     icon="pi pi-pencil" style="margin-right: 5px;"/>
-                    <p:commandButton value="Eliminar" actionListener="#{clienteBean.setClienteSeleccionado(cliente)}"
-                                    actionListener="#{clienteBean.eliminarCliente()}"
-                                    update="messages,dataTableClientes" icon="pi pi-trash"/>
+                    <p:commandButton value="Eliminar"
+                                     actionListener="#{clienteBean.setClienteSeleccionado(cliente)}"
+                                     update="messages,dataTableClientes"
+                                     icon="pi pi-trash"/>
                 </p:column>
             </p:dataTable>
         </h:form>
     </div>
-</body>
+</h:body>
 </html>
