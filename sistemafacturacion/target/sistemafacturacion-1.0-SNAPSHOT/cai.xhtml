@@ -47,10 +47,10 @@
                     <p:calendar value="#{caiBean.fechaVencimiento}" pattern="dd/MM/yyyy" required="true"/>
                 </div>
                 
-                <p:commandButton value="Guardar" actionListener="#{caiBean.guardarCAI()}"
-                                update="messages,dataTableCAI" icon="pi pi-save"/>
+                <p:commandButton value="Guardar" actionListener="#{caiBean.guardarOActualizarCAI()}"
+                                update="messages,dataTableCAI,formCAI" icon="pi pi-save"/>
                 <p:commandButton value="Limpiar" actionListener="#{caiBean.limpiarFormulario()}"
-                                update="formCAI" type="button" style="margin-left: 10px;"/>
+                                update="formCAI" process="@this" style="margin-left: 10px;"/>
             </p:panel>
             
             <p:dataTable id="dataTableCAI" value="#{caiBean.listaCAI}" var="cai"
