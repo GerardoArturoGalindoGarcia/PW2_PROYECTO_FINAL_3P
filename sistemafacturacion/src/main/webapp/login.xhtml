@@ -1,52 +1,148 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+<!DOCTYPE html>
+<html lang="es"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="primefaces">
 
 <h:head>
     <title>Sistema de Facturación - Login</title>
-    <h:outputStylesheet name="css/bootstrap.min.css"/>
+
     <style>
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-        .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .login-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .login-box h1 { text-align: center; color: #333; margin-bottom: 30px; font-size: 28px; font-weight: bold; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 5px rgba(102, 126, 234, 0.1); }
-        .btn-login { width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn-login:hover { background: #5568d3; }
-        .message { margin-bottom: 20px; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .login-button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .message {
+            margin-bottom: 20px;
+        }
     </style>
 </h:head>
 
 <h:body>
+
     <div class="login-container">
-        <div class="login-box">
-            <h1>Sistema de Facturación</h1>
-            <h:form>
-                <p:messages id="messages" showDetail="true" closable="true" styleClass="message"/>
-                
-                <div class="form-group">
-                    <label>Usuario</label>
-                    <p:inputText id="usuario" value="#{loginBean.nombreUsuario}" required="true" 
-                                 requiredMessage="El usuario es requerido"/>
-                </div>
-                
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <p:password id="contrasena" value="#{loginBean.contrasena}" required="true"
-                               requiredMessage="La contraseña es requerida"/>
-                </div>
-                
-                <p:commandButton value="Iniciar Sesión" actionListener="#{loginBean.autenticar()}"
-                                update="messages" styleClass="btn-login"/>
-            </h:form>
+
+        <div class="login-card">
+
+            <p:card>
+
+                <f:facet name="title">
+                    <div class="login-title">
+                        Sistema de Facturación
+                    </div>
+                </f:facet>
+
+                <f:facet name="subtitle">
+                    <div class="login-subtitle">
+                        Inicie sesión para continuar
+                    </div>
+                </f:facet>
+
+                <h:form id="loginForm">
+
+                    <p:messages
+                            id="messages"
+                            showDetail="true"
+                            closable="true"
+                            styleClass="message"/>
+
+                    <div class="field">
+
+                        <p:outputLabel
+                                for="usuario"
+                                value="Usuario"/>
+
+                        <p:inputText
+                                id="usuario"
+                                value="#{loginBean.nombreUsuario}"
+                                required="true"
+                                requiredMessage="El usuario es requerido"
+                                placeholder="Ingrese su usuario"
+                                style="width:100%"/>
+
+                    </div>
+
+                    <div class="field">
+
+                        <p:outputLabel
+                                for="contrasena"
+                                value="Contraseña"/>
+
+                        <p:password
+                                id="contrasena"
+                                value="#{loginBean.contrasena}"
+                                required="true"
+                                requiredMessage="La contraseña es requerida"
+                                placeholder="Ingrese su contraseña"
+                                feedback="false"
+                                toggleMask="true"
+                                style="width:100%"/>
+
+                    </div>
+
+                    <p:commandButton
+                            value="Iniciar Sesión"
+                            icon="pi pi-sign-in"
+                            action="#{loginBean.autenticar}"
+                            process="@form"
+                            update="messages"
+                            styleClass="login-button"/>
+
+                </h:form>
+
+            </p:card>
+
         </div>
+
     </div>
+
 </h:body>
 </html>

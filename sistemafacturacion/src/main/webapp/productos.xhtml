@@ -1,91 +1,326 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
 
 <h:head>
+
     <title>Gestión de Productos</title>
-    <h:outputStylesheet name="css/bootstrap.min.css"/>
+
 </h:head>
 
 <h:body>
-    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
-        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
-    </div>
-    
-    <div class="container" style="padding: 30px;">
-        <h1>Gestión de Productos</h1>
-        
+
+    <div style="padding: 20px;">
+
+        <!-- ========================= -->
+        <!-- ENCABEZADO -->
+        <!-- ========================= -->
+
+        <p:toolbar>
+
+            <p:toolbarGroup>
+
+                <span style="font-size: 22px; font-weight: bold;">
+
+                    <i class="pi pi-box"></i>
+
+                    Gestión de Productos
+
+                </span>
+
+            </p:toolbarGroup>
+
+
+            <p:toolbarGroup>
+
+                <p:button
+                        value="Volver a Inicio"
+                        icon="pi pi-home"
+                        outcome="inicio"
+                        severity="secondary"/>
+
+            </p:toolbarGroup>
+
+        </p:toolbar>
+
+
+        <br/>
+
+
+        <!-- ========================= -->
+        <!-- FORMULARIO -->
+        <!-- ========================= -->
+
         <h:form id="formProducto">
-            <p:messages id="messages" showDetail="true" closable="true"/>
-            
-            <p:panel header="Agregar Nuevo Producto" styleClass="card" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <label>Nombre:</label>
-                    <p:inputText value="#{productoBean.nombre}" required="true"/>
+
+            <p:messages
+                    id="messages"
+                    showDetail="true"
+                    closable="true"/>
+
+
+            <p:card>
+
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+
+                    <i class="pi pi-box"></i>
+
+                    Agregar / Editar Producto
+
                 </div>
-                <div class="form-group">
-                    <label>Descripción:</label>
-                    <p:inputTextarea value="#{productoBean.descripcion}" rows="3"/>
+
+
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        style="width:100%;">
+
+                    <p:outputLabel
+                            for="nombre"
+                            value="Nombre"/>
+
+                    <p:inputText
+                            id="nombre"
+                            value="#{productoBean.nombre}"
+                            required="true"
+                            requiredMessage="El nombre del producto es requerido"
+                            placeholder="Ingrese el nombre del producto"
+                            style="width:100%"/>
+
+                    <p:outputLabel
+                            for="descripcion"
+                            value="Descripción"/>
+
+                    <p:inputTextarea
+                            id="descripcion"
+                            value="#{productoBean.descripcion}"
+                            rows="3"
+                            autoResize="false"
+                            placeholder="Ingrese una descripción del producto"
+                            style="width:100%"/>
+
+                    <p:outputLabel
+                            for="precioVenta"
+                            value="Precio de Venta"/>
+
+                    <p:inputNumber
+                            id="precioVenta"
+                            value="#{productoBean.precioVenta}"
+                            symbol="L "
+                            symbolPosition="p"
+                            decimalPlaces="2"
+                            minValue="0"
+                            required="true"
+                            requiredMessage="El precio de venta es requerido"
+                            placeholder="Ingrese el precio de venta"
+                            style="width:100%"/>
+
+                    <p:outputLabel
+                            for="stock"
+                            value="Stock"/>
+
+                    <p:inputNumber
+                            id="stock"
+                            value="#{productoBean.stock}"
+                            decimalPlaces="0"
+                            minValue="0"
+                            required="true"
+                            requiredMessage="El stock es requerido"
+                            placeholder="Ingrese el stock"
+                            style="width:100%"/>
+
+                </p:panelGrid>
+
+
+                <p:divider/>
+
+
+                <!-- BOTONES -->
+
+                <p:commandButton
+                        value="#{productoBean.productoSeleccionado != null ? 'Actualizar Producto' : 'Guardar Producto'}"
+                        icon="#{productoBean.productoSeleccionado != null ? 'pi pi-pencil' : 'pi pi-save'}"
+                        action="#{productoBean.guardarOActualizarProducto}"
+                        process="@form"
+                        update="messages formProducto dataTableProductos"/>
+
+
+                <p:commandButton
+                        value="Limpiar"
+                        icon="pi pi-refresh"
+                        action="#{productoBean.limpiarFormulario}"
+                        process="@this"
+                        update="formProducto"
+                        immediate="true"
+                        severity="secondary"
+                        style="margin-left:10px"/>
+
+            </p:card>
+
+
+            <br/>
+
+
+            <!-- ========================= -->
+            <!-- TABLA -->
+            <!-- ========================= -->
+
+            <p:card>
+
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+
+                    <i class="pi pi-list"></i>
+
+                    Productos Registrados
+
                 </div>
-                <div class="form-group">
-                    <label>Precio Venta:</label>
-                    <p:inputNumber value="#{productoBean.precioVenta}" symbol="$" decimalPlaces="2" required="true"/>
-                </div>
-                <div class="form-group">
-                    <label>Stock:</label>
-                    <p:inputNumber value="#{productoBean.stock}" required="true"/>
-                </div>
-                
-                <p:commandButton value="Guardar"
-                                 actionListener="#{productoBean.guardarOActualizarProducto()}"
-                                 update="messages,dataTableProductos,formProducto" icon="pi pi-save"/>
-                <p:commandButton value="Limpiar" actionListener="#{productoBean.limpiarFormulario()}"
-                                 update="formProducto" process="@this" style="margin-left: 10px;"/>
-            </p:panel>
-            
-            <p:dataTable id="dataTableProductos" value="#{productoBean.listaProductos}" var="producto"
-                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10">
-                
-                <p:column headerText="ID" sortBy="#{producto.idProducto}">
-                    <h:outputText value="#{producto.idProducto}"/>
-                </p:column>
-                
-                <p:column headerText="Nombre" sortBy="#{producto.nombre}">
-                    <h:outputText value="#{producto.nombre}"/>
-                </p:column>
-                
-                <p:column headerText="Descripción">
-                    <h:outputText value="#{producto.descripcion}"/>
-                </p:column>
-                
-                <p:column headerText="Precio">
-                    <h:outputText value="#{producto.precioVenta}">
-                        <f:convertNumber pattern="$#,##0.00"/>
-                    </h:outputText>
-                </p:column>
-                
-                <p:column headerText="Stock">
-                    <h:outputText value="#{producto.stock}"/>
-                </p:column>
-                
-                <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton value="Editar"
-                                     update="formProducto"
-                                     process="@this"
-                                     actionListener="#{productoBean.seleccionarProducto(producto)}"
-                                     icon="pi pi-pencil"
-                                     style="margin-right: 5px;"/>
-                    <p:commandButton value="Eliminar"
-                                     actionListener="#{productoBean.prepararYEliminarProducto(producto)}"
-                                     onclick="return confirm('¿Está seguro de que desea eliminar este producto?');"
-                                     update="messages,dataTableProductos,formProducto"
-                                     process="@this"
-                                     icon="pi pi-trash"/>
-                </p:column>
-            </p:dataTable>
+
+
+                <p:dataTable
+                        id="dataTableProductos"
+                        value="#{productoBean.listaProductos}"
+                        var="producto"
+                        paginator="true"
+                        rows="10"
+                        rowsPerPageTemplate="5,10,15,20"
+                        paginatorPosition="bottom"
+                        stripedRows="true"
+                        showGridlines="true"
+                        reflow="true"
+                        emptyMessage="No hay productos registrados.">
+
+
+                    <!-- ID -->
+
+                    <p:column
+                            headerText="ID"
+                            sortBy="#{producto.idProducto}"
+                            style="width:80px">
+
+                        <h:outputText
+                                value="#{producto.idProducto}"/>
+
+                    </p:column>
+
+
+                    <!-- NOMBRE -->
+
+                    <p:column
+                            headerText="Nombre"
+                            sortBy="#{producto.nombre}">
+
+                        <h:outputText
+                                value="#{producto.nombre}"/>
+
+                    </p:column>
+
+
+                    <!-- DESCRIPCIÓN -->
+
+                    <p:column
+                            headerText="Descripción">
+
+                        <h:outputText
+                                value="#{producto.descripcion}"/>
+
+                    </p:column>
+
+
+                    <!-- PRECIO -->
+
+                    <p:column
+                            headerText="Precio de Venta"
+                            sortBy="#{producto.precioVenta}">
+
+                        <h:outputText
+                                value="#{producto.precioVenta}">
+
+                            <f:convertNumber
+                                    pattern="L #,##0.00"/>
+
+                        </h:outputText>
+
+                    </p:column>
+
+
+                    <!-- STOCK -->
+
+                    <p:column
+                            headerText="Stock"
+                            sortBy="#{producto.stock}"
+                            style="text-align:center">
+
+                        <p:tag
+                                value="#{producto.stock}"
+                                severity="#{producto.stock == 0 ? 'danger' : producto.stock == 5 ? 'warn' : 'success'}"/>
+
+                    </p:column>
+
+
+                    <!-- ACCIONES -->
+
+                    <p:column
+                            headerText="Acciones"
+                            style="width:150px; text-align:center">
+
+
+                        <!-- EDITAR -->
+
+                        <p:commandButton
+                                icon="pi pi-pencil"
+                                title="Editar"
+                                action="#{productoBean.seleccionarProducto(producto)}"
+                                update="formProducto"
+                                process="@this"
+                                styleClass="ui-button-rounded ui-button-text"
+                                style="margin-right:5px"/>
+
+
+                        <!-- ELIMINAR -->
+
+                        <p:commandButton
+                                icon="pi pi-trash"
+                                title="Eliminar"
+                                action="#{productoBean.prepararYEliminarProducto(producto)}"
+                                process="@this"
+                                update="messages dataTableProductos formProducto"
+                                styleClass="ui-button-rounded ui-button-text ui-button-danger">
+
+                            <p:confirm
+                                    header="Confirmar eliminación"
+                                    message="¿Está seguro de que desea eliminar este producto?"
+                                    icon="pi pi-exclamation-triangle"/>
+
+                        </p:commandButton>
+
+                    </p:column>
+
+                </p:dataTable>
+
+            </p:card>
+
         </h:form>
+
+        <p:confirmDialog global="true">
+
+            <p:commandButton
+                    value="Sí, eliminar"
+                    type="button"
+                    styleClass="ui-confirmdialog-yes"
+                    icon="pi pi-check"/>
+
+            <p:commandButton
+                    value="Cancelar"
+                    type="button"
+                    styleClass="ui-confirmdialog-no"
+                    icon="pi pi-times"
+                    severity="secondary"/>
+
+        </p:confirmDialog>
+
     </div>
+
 </h:body>
 </html>

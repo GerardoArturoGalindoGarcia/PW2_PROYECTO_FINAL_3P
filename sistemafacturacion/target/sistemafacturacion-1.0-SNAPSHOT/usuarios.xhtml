@@ -1,91 +1,312 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
+
     <title>Gestión de Usuarios</title>
-    <h:outputStylesheet name="css/bootstrap.min.css"/>
+
 </h:head>
 
 <h:body>
-    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
-        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
-    </div>
 
-    <div class="container" style="padding: 30px;">
-        <h1>Gestión de Usuarios</h1>
+
+        <!-- ========================= -->
+        <!-- ENCABEZADO -->
+        <!-- ========================= -->
+    <div style="padding: 20px;">
+
+        <p:toolbar>
+
+        <p:toolbarGroup>
+
+                <span style="font-size: 22px; font-weight: bold;">
+                    <i class="pi pi-users"></i>
+                    Gestión de Usuarios
+                </span>
+
+        </p:toolbarGroup>
+
+        <p:toolbarGroup>
+
+            <p:button
+                    value="Volver a Inicio"
+                    icon="pi pi-home"
+                    outcome="inicio"
+                    severity="secondary"/>
+
+        </p:toolbarGroup>
+        </p:toolbar>
+
+        <!-- ========================= -->
+        <!-- FORMULARIO -->
+        <!-- ========================= -->
 
         <h:form id="formUsuario">
-            <p:messages id="messages" showDetail="true" closable="true"/>
 
-            <p:panel header="Agregar Nuevo Usuario" styleClass="card" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <label>Nombre Usuario:</label>
-                    <p:inputText value="#{usuarioBean.nombreUsuario}" required="true"/>
+            <p:messages
+                    id="messages"
+                    showDetail="true"
+                    closable="true"/>
+
+
+            <p:card>
+
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+
+                    <i class="pi pi-user-plus"></i>
+
+                    Agregar / Editar Usuario
+
                 </div>
-                <div class="form-group">
-                    <label>Contraseña:</label>
-                    <p:password value="#{usuarioBean.contrasena}" required="true"/>
-                </div>
-                <div class="form-group">
-                    <label>Nombre:</label>
-                    <p:inputText value="#{usuarioBean.nombre}" required="true"/>
-                </div>
-                <div class="form-group">
-                    <label>Apellido:</label>
-                    <p:inputText value="#{usuarioBean.apellido}" required="true"/>
-                </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <p:inputText value="#{usuarioBean.email}" type="email" required="true"/>
-                </div>
+                <p:panelGrid columns="2"
+                             layout="grid"
+                             style="width:100%;">
 
-                <p:commandButton value="#{usuarioBean.usuarioSeleccionado != null ? 'Actualizar' : 'Guardar'}"
-                                actionListener="#{usuarioBean.guardarUsuario()}"
-                                update="messages,formUsuario" icon="pi pi-save"/>
-                <p:commandButton value="Limpiar" actionListener="#{usuarioBean.limpiarFormulario()}"
-                                update="formUsuario" process="@this" immediate="true" style="margin-left: 10px;"/>
-            </p:panel>
+                    <p:outputLabel
+                            for="nombreUsuario"
+                            value="Nombre de Usuario"/>
 
-            <p:dataTable id="dataTableUsuarios" value="#{usuarioBean.listaUsuarios}" var="usuario"
-                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10"
-                        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                        rowsPerPageTemplate="5,10,15">
+                    <p:inputText
+                            id="nombreUsuario"
+                            value="#{usuarioBean.nombreUsuario}"
+                            required="true"
+                            requiredMessage="El nombre de usuario es requerido"
+                            placeholder="Ingrese el nombre de usuario"/>
 
-                <p:column headerText="ID" sortBy="#{usuario.idUsuario}">
-                    <h:outputText value="#{usuario.idUsuario}"/>
-                </p:column>
 
-                <p:column headerText="Usuario" sortBy="#{usuario.nombreUsuario}">
-                    <h:outputText value="#{usuario.nombreUsuario}"/>
-                </p:column>
+                    <p:outputLabel
+                            for="contrasena"
+                            value="Contraseña"/>
 
-                <p:column headerText="Nombre">
-                    <h:outputText value="#{usuario.nombre} #{usuario.apellido}"/>
-                </p:column>
+                    <p:password
+                            id="contrasena"
+                            value="#{usuarioBean.contrasena}"
+                            required="true"
+                            requiredMessage="La contraseña es requerida"
+                            placeholder="Ingrese la contraseña"
+                            feedback="true"
+                            toggleMask="true"/>
 
-                <p:column headerText="Email">
-                    <h:outputText value="#{usuario.email}"/>
-                </p:column>
 
-                <p:column headerText="Estado">
-                    <h:outputText value="#{usuario.estado}"/>
-                </p:column>
+                    <p:outputLabel
+                            for="nombre"
+                            value="Nombre"/>
 
-                <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton value="Editar" update="formUsuario" process="@this"
-                                    actionListener="#{usuarioBean.editarUsuario(usuario)}"
-                                    icon="pi pi-pencil" style="margin-right: 5px;"/>
-                    <p:commandButton value="Eliminar" process="@this"
-                                     actionListener="#{usuarioBean.eliminarUsuario(usuario)}"
-                                     update="messages,formUsuario"
-                                     icon="pi pi-trash"/>
-                </p:column>
-            </p:dataTable>
+                    <p:inputText
+                            id="nombre"
+                            value="#{usuarioBean.nombre}"
+                            required="true"
+                            requiredMessage="El nombre es requerido"
+                            placeholder="Ingrese el nombre"/>
+
+
+                    <p:outputLabel
+                            for="apellido"
+                            value="Apellido"/>
+
+                    <p:inputText
+                            id="apellido"
+                            value="#{usuarioBean.apellido}"
+                            required="true"
+                            requiredMessage="El apellido es requerido"
+                            placeholder="Ingrese el apellido"/>
+
+
+                    <p:outputLabel
+                            for="email"
+                            value="Correo Electrónico"/>
+
+                    <p:inputText
+                            id="email"
+                            value="#{usuarioBean.email}"
+                            type="email"
+                            required="true"
+                            requiredMessage="El correo electrónico es requerido"
+                            placeholder="Ingrese el correo electrónico"/>
+
+                </p:panelGrid>
+
+
+                <p:divider/>
+
+
+                <p:commandButton
+                        value="#{usuarioBean.usuarioSeleccionado != null ? 'Actualizar' : 'Guardar'}"
+                        icon="#{usuarioBean.usuarioSeleccionado != null ? 'pi pi-pencil' : 'pi pi-save'}"
+                        action="#{usuarioBean.guardarUsuario}"
+                        process="@form"
+                        update="messages formUsuario dataTableUsuarios"/>
+
+                <p:commandButton
+                        value="Limpiar"
+                        icon="pi pi-refresh"
+                        action="#{usuarioBean.limpiarFormulario}"
+                        process="@this"
+                        update="formUsuario"
+                        immediate="true"
+                        severity="secondary"
+                        style="margin-left:10px"/>
+
+            </p:card>
+
+
+            <!-- ========================= -->
+            <!-- TABLA -->
+            <!-- ========================= -->
+
+            <div class="table-container">
+
+                <p:card>
+
+                    <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
+                        <i class="pi pi-list"></i>
+                        Usuarios Registrados
+                    </div>
+
+
+                    <p:dataTable
+                            id="dataTableUsuarios"
+                            value="#{usuarioBean.listaUsuarios}"
+                            var="usuario"
+                            paginator="true"
+                            rows="10"
+                            rowsPerPageTemplate="5,10,15,20"
+                            paginatorPosition="bottom"
+                            stripedRows="true"
+                            showGridlines="true"
+                            reflow="true"
+                            emptyMessage="No hay usuarios registrados."
+                            sortMode="single">
+
+
+                        <!-- ID -->
+
+                        <p:column
+                                headerText="ID"
+                                sortBy="#{usuario.idUsuario}"
+                                style="width:80px">
+
+                            <h:outputText
+                                    value="#{usuario.idUsuario}"/>
+
+                        </p:column>
+
+
+                        <!-- USUARIO -->
+
+                        <p:column
+                                headerText="Usuario"
+                                sortBy="#{usuario.nombreUsuario}">
+
+                            <h:outputText
+                                    value="#{usuario.nombreUsuario}"/>
+
+                        </p:column>
+
+
+                        <!-- NOMBRE -->
+
+                        <p:column
+                                headerText="Nombre"
+                                sortBy="#{usuario.nombre}">
+
+                            <h:outputText
+                                    value="#{usuario.nombre} #{usuario.apellido}"/>
+
+                        </p:column>
+
+
+                        <!-- EMAIL -->
+
+                        <p:column
+                                headerText="Correo Electrónico">
+
+                            <h:outputText
+                                    value="#{usuario.email}"/>
+
+                        </p:column>
+
+
+                        <!-- ESTADO -->
+
+                        <p:column
+                                headerText="Estado"
+                                style="text-align:center">
+
+                            <p:tag
+                                    value="#{usuario.estado}"
+                                    severity="#{usuario.estado eq 'activo' ? 'success' : 'danger'}"/>
+
+                        </p:column>
+
+
+                        <!-- ACCIONES -->
+
+                        <p:column
+                                headerText="Acciones"
+                                style="width:180px; text-align:center">
+
+                            <p:commandButton
+                                    icon="pi pi-pencil"
+                                    title="Editar"
+                                    action="#{usuarioBean.editarUsuario(usuario)}"
+                                    update="formUsuario"
+                                    process="@this"
+                                    styleClass="ui-button-rounded ui-button-text"
+                                    style="margin-right:5px"/>
+
+
+                            <p:commandButton
+                                    icon="pi pi-trash"
+                                    title="Eliminar"
+                                    action="#{usuarioBean.eliminarUsuario(usuario)}"
+                                    process="@this"
+                                    update="messages formUsuario dataTableUsuarios"
+                                    styleClass="ui-button-rounded ui-button-text ui-button-danger">
+
+                                <p:confirm
+                                        header="Confirmar eliminación"
+                                        message="¿Está seguro de que desea eliminar este usuario?"
+                                        icon="pi pi-exclamation-triangle"/>
+
+                            </p:commandButton>
+
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:card>
+
+            </div>
+
         </h:form>
+
+
+        <!-- ========================= -->
+        <!-- CONFIRMACIÓN -->
+        <!-- ========================= -->
+
+        <p:confirmDialog global="true">
+
+            <p:commandButton
+                    value="Sí, eliminar"
+                    type="button"
+                    styleClass="ui-confirmdialog-yes"
+                    icon="pi pi-check"/>
+
+            <p:commandButton
+                    value="Cancelar"
+                    type="button"
+                    styleClass="ui-confirmdialog-no"
+                    icon="pi pi-times"
+                    severity="secondary"/>
+
+        </p:confirmDialog>
+
     </div>
+
 </h:body>
+
 </html>

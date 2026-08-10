@@ -1,95 +1,322 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
+
     <title>Gestión de Clientes</title>
-    <h:outputStylesheet name="css/bootstrap.min.css"/>
+
 </h:head>
 
 <h:body>
-    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
-        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
-    </div>
-    
-    <div class="container" style="padding: 30px;">
-        <h1>Gestión de Clientes</h1>
-        
-        <h:form id="formCliente">
-            <p:messages id="messages" showDetail="true" closable="true"/>
-            
-            <p:panel header="Agregar Nuevo Cliente" styleClass="card" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <label>Nombre:</label>
-                    <p:inputText value="#{clienteBean.nombre}" required="true"/>
-                </div>
-                <div class="form-group">
-                    <label>RTN:</label>
-                    <p:inputText value="#{clienteBean.rtn}" required="true"/>
-                </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <p:inputText value="#{clienteBean.email}" type="email"/>
-                </div>
-                <div class="form-group">
-                    <label>Teléfono:</label>
-                    <p:inputText value="#{clienteBean.telefono}"/>
-                </div>
-                <div class="form-group">
-                    <label>Dirección:</label>
-                    <p:inputText value="#{clienteBean.direccion}"/>
-                </div>
-                
-                <p:commandButton value="Guardar" 
-                                actionListener="#{clienteBean.guardarOActualizarCliente()}"
-                                update="messages,dataTableClientes,formCliente" icon="pi pi-save"/>
-                <p:commandButton value="Limpiar" actionListener="#{clienteBean.limpiarFormulario()}"
-                                update="formCliente" process="@this" style="margin-left: 10px;"/>
-            </p:panel>
-            
-            <p:dataTable id="dataTableClientes" value="#{clienteBean.listaClientes}" var="cliente"
-                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10">
-                
-                <p:column headerText="ID" sortBy="#{cliente.idCliente}">
-                    <h:outputText value="#{cliente.idCliente}"/>
-                </p:column>
-                
-                <p:column headerText="Nombre" sortBy="#{cliente.nombre}">
-                    <h:outputText value="#{cliente.nombre}"/>
-                </p:column>
-                
-                <p:column headerText="RTN">
-                    <h:outputText value="#{cliente.rtn}"/>
-                </p:column>
-                
-                <p:column headerText="Email">
-                    <h:outputText value="#{cliente.email}"/>
-                </p:column>
-                
-                <p:column headerText="Teléfono">
-                    <h:outputText value="#{cliente.telefono}"/>
-                </p:column>
-                
-                <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton
-                            value="Editar"
-                            update="formCliente"
-                            process="@this"
-                            actionListener="#{clienteBean.seleccionarCliente(cliente)}"
-                            icon="pi pi-pencil"
-                            style="margin-right: 5px;"/>
 
-                    <p:commandButton
-                            value="Eliminar" process="@this"
-                            onclick="return confirm('¿Está seguro de que desea eliminar este cliente?');"
-                            actionListener="#{clienteBean.eliminarCliente(cliente)}"
-                            update="messages,dataTableClientes"
-                            icon="pi pi-trash"/>
-                </p:column>
-            </p:dataTable>
+    <!-- ========================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================= -->
+
+    <div style="padding: 20px;">
+
+        <p:toolbar>
+
+            <p:toolbarGroup>
+
+                <span style="font-size: 22px; font-weight: bold;">
+                    <i class="pi pi-users"></i>
+                    Gestión de Clientes
+                </span>
+
+            </p:toolbarGroup>
+
+            <p:toolbarGroup>
+
+                <p:button
+                        value="Volver a Inicio"
+                        icon="pi pi-home"
+                        outcome="inicio"
+                        severity="secondary"/>
+
+            </p:toolbarGroup>
+
+        </p:toolbar>
+
+
+        <br/>
+
+
+        <!-- ========================= -->
+        <!-- FORMULARIO -->
+        <!-- ========================= -->
+
+        <h:form id="formCliente">
+
+            <p:messages
+                    id="messages"
+                    showDetail="true"
+                    closable="true"/>
+
+
+            <p:card>
+
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+
+                    <i class="pi pi-user-plus"></i>
+
+                    Agregar / Editar Cliente
+
+                </div>
+
+
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        style="width:100%;">
+
+                    <p:outputLabel
+                            for="nombre"
+                            value="Nombre"/>
+
+                    <p:inputText
+                            id="nombre"
+                            value="#{clienteBean.nombre}"
+                            required="true"
+                            requiredMessage="El nombre es requerido"
+                            placeholder="Ingrese el nombre"
+                            style="width:100%"/>
+
+                    <p:outputLabel
+                            for="rtn"
+                            value="RTN"/>
+
+                    <p:inputText
+                            id="rtn"
+                            value="#{clienteBean.rtn}"
+                            required="true"
+                            requiredMessage="El RTN es requerido"
+                            placeholder="Ingrese el RTN"
+                            style="width:100%"/>
+
+                    <p:outputLabel
+                            for="email"
+                            value="Correo Electrónico"/>
+
+                    <p:inputText
+                            id="email"
+                            value="#{clienteBean.email}"
+                            type="email"
+                            placeholder="ejemplo@correo.com"
+                            style="width:100%"/>
+
+                    <p:outputLabel
+                            for="telefono"
+                            value="Teléfono"/>
+
+                    <p:inputText
+                            id="telefono"
+                            value="#{clienteBean.telefono}"
+                            placeholder="Ingrese el teléfono"
+                            style="width:100%"/>
+
+                    <p:outputLabel
+                            for="direccion"
+                            value="Dirección"/>
+
+                    <p:inputText
+                            id="direccion"
+                            value="#{clienteBean.direccion}"
+                            placeholder="Ingrese la dirección"
+                            style="width:100%"/>
+
+                </p:panelGrid>
+
+
+                <p:divider/>
+
+                <p:commandButton
+                        value="#{clienteBean.clienteSeleccionado != null ? 'Actualizar Cliente' : 'Guardar Cliente'}"
+                        icon="#{clienteBean.clienteSeleccionado != null ? 'pi pi-pencil' : 'pi pi-save'}"
+                        action="#{clienteBean.guardarOActualizarCliente}"
+                        process="@form"
+                        update="messages formCliente dataTableClientes"/>
+
+                <p:commandButton
+                        value="Limpiar"
+                        icon="pi pi-refresh"
+                        action="#{clienteBean.limpiarFormulario}"
+                        process="@this"
+                        update="formCliente"
+                        immediate="true"
+                        severity="secondary"
+                        style="margin-left:10px"/>
+
+            </p:card>
+
+
+            <br/>
+
+
+            <!-- ========================= -->
+            <!-- TABLA CLIENTES -->
+            <!-- ========================= -->
+
+            <p:card>
+
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 20px;">
+
+                    <i class="pi pi-list"></i>
+
+                    Clientes Registrados
+
+                </div>
+
+                <p:dataTable
+                        id="dataTableClientes"
+                        value="#{clienteBean.listaClientes}"
+                        var="cliente"
+                        paginator="true"
+                        rows="10"
+                        rowsPerPageTemplate="5,10,15,20"
+                        paginatorPosition="bottom"
+                        stripedRows="true"
+                        showGridlines="true"
+                        reflow="true"
+                        emptyMessage="No hay clientes registrados.">
+
+
+                    <!-- ID -->
+
+                    <p:column
+                            headerText="ID"
+                            sortBy="#{cliente.idCliente}"
+                            style="width:80px">
+
+                        <h:outputText
+                                value="#{cliente.idCliente}"/>
+
+                    </p:column>
+
+
+                    <!-- NOMBRE -->
+
+                    <p:column
+                            headerText="Nombre"
+                            sortBy="#{cliente.nombre}">
+
+                        <h:outputText
+                                value="#{cliente.nombre}"/>
+
+                    </p:column>
+
+
+                    <!-- RTN -->
+
+                    <p:column
+                            headerText="RTN">
+
+                        <h:outputText
+                                value="#{cliente.rtn}"/>
+
+                    </p:column>
+
+
+                    <!-- EMAIL -->
+
+                    <p:column
+                            headerText="Correo Electrónico">
+
+                        <h:outputText
+                                value="#{cliente.email}"/>
+
+                    </p:column>
+
+
+                    <!-- TELÉFONO -->
+
+                    <p:column
+                            headerText="Teléfono">
+
+                        <h:outputText
+                                value="#{cliente.telefono}"/>
+
+                    </p:column>
+
+
+                    <!-- DIRECCIÓN -->
+
+                    <p:column
+                            headerText="Dirección">
+
+                        <h:outputText
+                                value="#{cliente.direccion}"/>
+
+                    </p:column>
+                    <!-- ACCIONES -->
+                    <p:column
+                            headerText="Acciones"
+                            style="width:150px; text-align:center">
+
+
+                        <!-- EDITAR -->
+
+                        <p:commandButton
+                                icon="pi pi-pencil"
+                                title="Editar"
+                                action="#{clienteBean.seleccionarCliente(cliente)}"
+                                update="formCliente"
+                                process="@this"
+                                styleClass="ui-button-rounded ui-button-text"
+                                style="margin-right:5px"/>
+
+
+                        <!-- ELIMINAR -->
+
+                        <p:commandButton
+                                icon="pi pi-trash"
+                                title="Eliminar"
+                                action="#{clienteBean.eliminarCliente(cliente)}"
+                                process="@this"
+                                update="messages dataTableClientes"
+                                styleClass="ui-button-rounded ui-button-text ui-button-danger">
+
+                            <p:confirm
+                                    header="Confirmar eliminación"
+                                    message="¿Está seguro de que desea eliminar este cliente?"
+                                    icon="pi pi-exclamation-triangle"/>
+
+                        </p:commandButton>
+
+                    </p:column>
+
+                </p:dataTable>
+
+            </p:card>
+
         </h:form>
+
+
+        <!-- ========================= -->
+        <!-- CONFIRMACIÓN -->
+        <!-- ========================= -->
+
+        <p:confirmDialog global="true">
+
+            <p:commandButton
+                    value="Sí, eliminar"
+                    type="button"
+                    styleClass="ui-confirmdialog-yes"
+                    icon="pi pi-check"/>
+
+            <p:commandButton
+                    value="Cancelar"
+                    type="button"
+                    styleClass="ui-confirmdialog-no"
+                    icon="pi pi-times"
+                    severity="secondary"/>
+
+        </p:confirmDialog>
+
     </div>
+
 </h:body>
+
 </html>
