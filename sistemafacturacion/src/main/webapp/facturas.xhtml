@@ -5,144 +5,535 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
+
     <title>Gestión de Facturas</title>
-    <h:outputStylesheet name="css/bootstrap.min.css"/>
+
 </h:head>
 
 <h:body>
-    <div class="navbar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px 30px; color: white;">
-        <h:link value="← Volver a Inicio" outcome="inicio" style="color: white; text-decoration: none; font-weight: bold;"/>
-    </div>
-    
-    <div class="container" style="padding: 30px;">
-        <h1>Gestión de Facturas</h1>
-        
+
+    <div style="padding: 20px;">
+
+        <!-- ========================= -->
+        <!-- BARRA SUPERIOR -->
+        <!-- ========================= -->
+
+        <p:toolbar>
+
+            <p:toolbarGroup>
+
+                <span style="font-size: 22px; font-weight: bold;">
+                    <i class="pi pi-receipt"></i>
+                    Gestión de Facturas
+                </span>
+
+            </p:toolbarGroup>
+
+            <p:toolbarGroup>
+
+                <p:button
+                        value="Volver a Inicio"
+                        icon="pi pi-home"
+                        outcome="inicio"
+                        severity="secondary"/>
+
+            </p:toolbarGroup>
+
+        </p:toolbar>
+
+
         <h:form id="formFactura">
-            <p:messages id="messages" showDetail="true" closable="true"/>
-            
-            <p:panel header="Crear Nueva Factura" styleClass="card" style="margin-bottom: 20px;">
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label>Número Factura:</label>
-                        <!-- Número autocompletado desde CAI activo (solo lectura) -->
-                        <p:inputNumber value="#{facturaBean.numeroFactura}" disabled="true"/>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label>CAI:</label>
-                        <p:inputText value="#{facturaBean.caiActivo.cai}" disabled="true"/>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label>Vencimiento CAI:</label>
-                        <p:inputText value="#{facturaBean.caiActivo.fechaVencimiento}" disabled="true"/>
-                    </div>
+
+            <!-- MENSAJES -->
+
+            <p:messages
+                    id="messages"
+                    showDetail="true"
+                    closable="true"/>
+
+
+            <!-- ========================= -->
+            <!-- CREAR FACTURA -->
+            <!-- ========================= -->
+
+            <p:card>
+
+                <f:facet name="title">
+
+                    <i class="pi pi-file-plus"></i>
+
+                    Crear Nueva Factura
+
+                </f:facet>
+
+
+                <!-- INFORMACIÓN DE FACTURA -->
+
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        style="width:100%;">
+
+                    <p:outputLabel
+                            for="numeroFactura"
+                            value="Número Factura"/>
+
+                    <p:inputNumber
+                            id="numeroFactura"
+                            value="#{facturaBean.numeroFactura}"
+                            disabled="true"/>
+
+
+                    <p:outputLabel
+                            for="cai"
+                            value="CAI"/>
+
+                    <p:inputText
+                            id="cai"
+                            value="#{facturaBean.caiActivo.cai}"
+                            disabled="true"/>
+
+
+                    <p:outputLabel
+                            for="vencimientoCAI"
+                            value="Vencimiento CAI"/>
+
+                    <p:inputText
+                            id="vencimientoCAI"
+                            value="#{facturaBean.caiActivo.fechaVencimiento}"
+                            disabled="true"/>
+
+                </p:panelGrid>
+
+
+                <p:divider/>
+
+
+                <!-- ========================= -->
+                <!-- CLIENTE Y VALORES -->
+                <!-- ========================= -->
+
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        style="width:100%;">
+
+                    <p:outputLabel
+                            for="cliente"
+                            value="Cliente"/>
+
+                    <p:autoComplete
+                            id="cliente"
+                            value="#{facturaBean.clienteSeleccionado}"
+                            completeMethod="#{facturaBean.completarClientes}"
+                            var="c"
+                            itemLabel="#{c.nombre}"
+                            itemValue="#{c}"
+                            forceSelection="false"/>
+
+
+                    <p:outputLabel
+                            for="clienteNoRegistrado"
+                            value="Cliente no registrado"/>
+
+                    <p:inputText
+                            id="clienteNoRegistrado"
+                            value="#{facturaBean.clienteNoRegistradoNombre}"
+                            placeholder="Nombre si no está registrado"/>
+
+
+                    <p:outputLabel
+                            for="descuento"
+                            value="Descuento (%)"/>
+
+                    <p:inputNumber
+                            id="descuento"
+                            value="#{facturaBean.descuento}"
+                            decimalPlaces="2">
+
+                        <p:ajax
+                                event="change"
+                                listener="#{facturaBean.onValoresFinancierosChange}"
+                                update="subtotal total"/>
+
+                    </p:inputNumber>
+
+
+                    <p:outputLabel
+                            for="impuesto"
+                            value="Impuesto (%)"/>
+
+                    <p:inputNumber
+                            id="impuesto"
+                            value="#{facturaBean.impuesto}"
+                            decimalPlaces="2">
+
+                        <p:ajax
+                                event="change"
+                                listener="#{facturaBean.onValoresFinancierosChange}"
+                                update="subtotal total"/>
+
+                    </p:inputNumber>
+
+                </p:panelGrid>
+
+
+                <p:divider/>
+
+
+                <!-- ========================= -->
+                <!-- AGREGAR PRODUCTO -->
+                <!-- ========================= -->
+
+                <f:facet name="footer">
+
+                    <h3 style="margin-top: 0;">
+                        <i class="pi pi-box"></i>
+                        Agregar Producto
+                    </h3>
+
+                </f:facet>
+
+
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        style="width:100%;">
+
+                    <p:outputLabel
+                            for="producto"
+                            value="Producto"/>
+
+                    <p:autoComplete
+                            id="producto"
+                            value="#{facturaBean.productoSeleccionado}"
+                            completeMethod="#{facturaBean.completarProductos}"
+                            var="p"
+                            itemLabel="#{p.nombre}"
+                            itemValue="#{p}"
+                            forceSelection="true"/>
+
+
+                    <p:outputLabel
+                            for="cantidad"
+                            value="Cantidad"/>
+
+                    <p:inputNumber
+                            id="cantidad"
+                            value="#{facturaBean.cantidadLinea}"
+                            minValue="1"/>
+
+
+                    <p:outputLabel
+                            for="precioUnitario"
+                            value="Precio Unitario"/>
+
+                    <p:inputNumber
+                            id="precioUnitario"
+                            value="#{facturaBean.precioUnitarioLinea}"
+                            symbol="$"
+                            decimalPlaces="2"/>
+
+                    <p:outputLabel
+                            value=""/>
+
+                    <p:commandButton
+                            value="Agregar Producto"
+                            icon="pi pi-plus"
+                            actionListener="#{facturaBean.agregarLinea}"
+                            update="detalleTable subtotal total messages"/>
+
+                </p:panelGrid>
+
+
+                <p:divider/>
+
+
+                <!-- ========================= -->
+                <!-- DETALLE DE FACTURA -->
+                <!-- ========================= -->
+
+                <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
+
+                    <i class="pi pi-list"></i>
+
+                    Detalle de Factura
+
                 </div>
 
-                <div class="form-row" style="margin-top:10px;">
-                    <div class="form-group col-md-6">
-                        <label>Cliente (autocomplete):</label>
-                        <p:autoComplete value="#{facturaBean.clienteSeleccionado}" completeMethod="#{facturaBean.completarClientes}" var="c"
-                                                                itemLabel="#{c.nombre}" itemValue="#{c}" forceSelection="false"/>
-                        <p:inputText value="#{facturaBean.clienteNoRegistradoNombre}" placeholder="Nombre si no está registrado"/>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label>Descuento (%):</label>
-                        <p:inputNumber value="#{facturaBean.descuento}" decimalPlaces="2">
-                            <p:ajax event="change" listener="#{facturaBean.onValoresFinancierosChange}" update="subtotal total"/>
-                        </p:inputNumber>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label>Impuesto (%):</label>
-                        <p:inputNumber value="#{facturaBean.impuesto}" decimalPlaces="2">
-                            <p:ajax event="change" listener="#{facturaBean.onValoresFinancierosChange}" update="subtotal total"/>
-                        </p:inputNumber>
-                    </div>
-                </div>
 
-                <h:panelGroup>
-                    <h3>Agregar Producto</h3>
-                    <div class="form-row">
-                        <div class="form-group col-md-5">
-                            <p:autoComplete value="#{facturaBean.productoSeleccionado}" completeMethod="#{facturaBean.completarProductos}" var="p"
-                                                                        itemLabel="#{p.nombre}" itemValue="#{p}" forceSelection="true"/>
-                        </div>
-                        <div class="form-group col-md-2">
-                            <p:inputNumber value="#{facturaBean.cantidadLinea}" minValue="1"/>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <p:inputNumber value="#{facturaBean.precioUnitarioLinea}" symbol="$" decimalPlaces="2"/>
-                        </div>
-                        <div class="form-group col-md-2">
-                            <p:commandButton value="Agregar" actionListener="#{facturaBean.agregarLinea}" update="detalleTable subtotal total messages"/>
-                        </div>
-                    </div>
-                </h:panelGroup>
+                <p:dataTable
+                        id="detalleTable"
+                        value="#{facturaBean.detalleActual}"
+                        var="d"
+                        editable="true"
+                        stripedRows="true"
+                        showGridlines="true"
+                        reflow="true"
+                        emptyMessage="No hay productos agregados."
+                        style="margin-top:10px;">
 
-                <p:dataTable id="detalleTable" value="#{facturaBean.detalleActual}" var="d" editable="true" style="margin-top:10px;">
-                    <p:column headerText="Producto">
-                        <h:outputText value="#{d.idProducto}"/>
+                    <p:column
+                            headerText="Producto">
+
+                        <h:outputText
+                                value="#{d.idProducto}"/>
+
                     </p:column>
-                    <p:column headerText="Cantidad">
-                        <h:outputText value="#{d.cantidad}"/>
+
+
+                    <p:column
+                            headerText="Cantidad">
+
+                        <h:outputText
+                                value="#{d.cantidad}"/>
+
                     </p:column>
-                    <p:column headerText="Precio Unitario">
-                        <h:outputText value="#{d.precioUnitario}">
-                            <f:convertNumber pattern="$#,##0.00"/>
+
+
+                    <p:column
+                            headerText="Precio Unitario">
+
+                        <h:outputText
+                                value="#{d.precioUnitario}">
+
+                            <f:convertNumber
+                                    pattern="$#,##0.00"/>
+
                         </h:outputText>
+
                     </p:column>
-                    <p:column headerText="Subtotal">
-                        <h:outputText value="#{d.subtotal}">
-                            <f:convertNumber pattern="$#,##0.00"/>
+
+
+                    <p:column
+                            headerText="Subtotal">
+
+                        <h:outputText
+                                value="#{d.subtotal}">
+
+                            <f:convertNumber
+                                    pattern="$#,##0.00"/>
+
                         </h:outputText>
+
                     </p:column>
-                    <p:column headerText="Acciones">
-                        <p:commandButton value="Eliminar" actionListener="#{facturaBean.eliminarLinea(d)}" update="detalleTable subtotal total messages"/>
+
+
+                    <p:column
+                            headerText="Acciones"
+                            style="text-align:center;">
+
+                        <p:commandButton
+                                icon="pi pi-trash"
+                                title="Eliminar"
+                                actionListener="#{facturaBean.eliminarLinea(d)}"
+                                update="detalleTable subtotal total messages"
+                                styleClass="ui-button-rounded ui-button-text ui-button-danger"/>
+
                     </p:column>
+
                 </p:dataTable>
 
-                <div style="margin-top:10px; text-align:right;">
-                    <label>Subtotal:</label>
-                    <p:inputNumber id="subtotal" value="#{facturaBean.subtotal}" symbol="$" decimalPlaces="2" disabled="true"/>
-                    <label>Total:</label>
-                    <p:inputNumber id="total" value="#{facturaBean.total}" symbol="$" decimalPlaces="2" disabled="true"/>
-                </div>
 
-                <p:commandButton value="Crear Factura" actionListener="#{facturaBean.crearFactura()}" update="messages" icon="pi pi-plus" style="margin-top:10px;"/>
-                <p:commandButton value="Guardar" actionListener="#{facturaBean.guardarFactura()}" update=":formFactura:messages,:formFactura:dataTableFacturas" icon="pi pi-save" style="margin-left: 10px; margin-top:10px;"/>
-            </p:panel>
-            
-            <p:dataTable id="dataTableFacturas" value="#{facturaBean.listaFacturas}" var="factura"
-                        scrollable="true" style="margin-top: 20px;" paginator="true" rows="10">
-                
-                <p:column headerText="ID" sortBy="#{factura.idFactura}">
-                    <h:outputText value="#{factura.idFactura}"/>
-                </p:column>
-                
-                <p:column headerText="Número" sortBy="#{factura.numeroFactura}">
-                    <h:outputText value="#{factura.numeroFactura}"/>
-                </p:column>
-                
-                <p:column headerText="CAI">
-                    <h:outputText value="#{factura.cai}"/>
-                </p:column>
-                
-                <p:column headerText="Fecha">
-                    <h:outputText value="#{factura.fechaFactura}">
-                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
-                    </h:outputText>
-                </p:column>
-                
-                <p:column headerText="Total">
-                    <h:outputText value="#{factura.total}">
-                        <f:convertNumber pattern="$#,##0.00"/>
-                    </h:outputText>
-                </p:column>
-                
-                <p:column headerText="Acciones" style="width:150px;">
-                    <p:commandButton value="Ver" icon="pi pi-eye" style="margin-right: 5px;"/>
-                    <p:commandButton value="PDF" icon="pi pi-download"/>
-                </p:column>
-            </p:dataTable>
+                <p:divider/>
+
+
+                <!-- ========================= -->
+                <!-- TOTALES -->
+                <!-- ========================= -->
+
+                <p:panelGrid
+                        columns="2"
+                        layout="grid"
+                        style="width:100%;">
+
+                    <p:outputLabel
+                            for="subtotal"
+                            value="Subtotal"/>
+
+                    <p:inputNumber
+                            id="subtotal"
+                            value="#{facturaBean.subtotal}"
+                            symbol="$"
+                            decimalPlaces="2"
+                            disabled="true"/>
+
+
+                    <p:outputLabel
+                            for="total"
+                            value="Total"/>
+
+                    <p:inputNumber
+                            id="total"
+                            value="#{facturaBean.total}"
+                            symbol="$"
+                            decimalPlaces="2"
+                            disabled="true"/>
+
+                </p:panelGrid>
+
+
+                <p:divider/>
+
+
+                <!-- ========================= -->
+                <!-- BOTONES -->
+                <!-- ========================= -->
+
+                <p:commandButton
+                        value="Crear Factura"
+                        icon="pi pi-plus"
+                        actionListener="#{facturaBean.crearFactura()}"
+                        update="messages"
+                        style="margin-top:10px;"/>
+
+
+                <p:commandButton
+                        value="Guardar"
+                        icon="pi pi-save"
+                        actionListener="#{facturaBean.guardarFactura()}"
+                        update=":formFactura:messages :formFactura:dataTableFacturas"
+                        style="margin-left:10px; margin-top:10px;"/>
+
+            </p:card>
+
+
+            <!-- ========================= -->
+            <!-- FACTURAS REGISTRADAS -->
+            <!-- ========================= -->
+
+            <div style="margin-top: 20px;">
+
+                <p:card>
+
+                    <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
+
+                        <i class="pi pi-list"></i>
+
+                        Facturas Registradas
+
+                    </div>
+
+
+                    <p:dataTable
+                            id="dataTableFacturas"
+                            value="#{facturaBean.listaFacturas}"
+                            var="factura"
+                            paginator="true"
+                            rows="10"
+                            rowsPerPageTemplate="5,10,15,20"
+                            paginatorPosition="bottom"
+                            stripedRows="true"
+                            showGridlines="true"
+                            reflow="true"
+                            emptyMessage="No hay facturas registradas."
+                            sortMode="single"
+                            scrollable="true">
+
+
+                        <!-- ID -->
+
+                        <p:column
+                                headerText="ID"
+                                sortBy="#{factura.idFactura}"
+                                style="width:80px">
+
+                            <h:outputText
+                                    value="#{factura.idFactura}"/>
+
+                        </p:column>
+
+
+                        <!-- NÚMERO -->
+
+                        <p:column
+                                headerText="Número"
+                                sortBy="#{factura.numeroFactura}">
+
+                            <h:outputText
+                                    value="#{factura.numeroFactura}"/>
+
+                        </p:column>
+
+
+                        <!-- CAI -->
+
+                        <p:column
+                                headerText="CAI"
+                                sortBy="#{factura.cai}">
+
+                            <h:outputText
+                                    value="#{factura.cai}"/>
+
+                        </p:column>
+
+
+                        <!-- FECHA -->
+
+                        <p:column
+                                headerText="Fecha"
+                                sortBy="#{factura.fechaFactura}">
+
+                            <h:outputText
+                                    value="#{factura.fechaFactura}">
+
+                                <f:convertDateTime
+                                        pattern="dd/MM/yyyy HH:mm"/>
+
+                            </h:outputText>
+
+                        </p:column>
+
+
+                        <!-- TOTAL -->
+
+                        <p:column
+                                headerText="Total"
+                                sortBy="#{factura.total}">
+
+                            <h:outputText
+                                    value="#{factura.total}">
+
+                                <f:convertNumber
+                                        pattern="$#,##0.00"/>
+
+                            </h:outputText>
+
+                        </p:column>
+
+
+                        <!-- ACCIONES -->
+
+                        <p:column
+                                headerText="Acciones"
+                                style="width:180px; text-align:center;">
+
+                            <p:commandButton
+                                    icon="pi pi-eye"
+                                    title="Ver"
+                                    styleClass="ui-button-rounded ui-button-text"
+                                    style="margin-right:5px;"/>
+
+
+                            <p:commandButton
+                                    icon="pi pi-download"
+                                    title="PDF"
+                                    styleClass="ui-button-rounded ui-button-text"/>
+
+                        </p:column>
+
+
+                    </p:dataTable>
+
+                </p:card>
+
+            </div>
+
+
         </h:form>
+
     </div>
+
 </h:body>
+
 </html>
