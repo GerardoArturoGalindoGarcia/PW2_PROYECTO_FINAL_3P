@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Historial de Facturas</title>
+</h:head>
+
+<h:body>
+    <h:form id="formHistorial">
+        <p:messages id="messages" showDetail="true" closable="true"/>
+        <p:dataTable id="tablaFacturas" value="#{facturaBean.listaFacturas}" var="f" paginator="true" rows="10" selectionMode="single" selection="#{facturaBean.facturaSeleccionada}">
+            <p:column headerText="ID">
+                <h:outputText value="#{f.idFactura}"/>
+            </p:column>
+            <p:column headerText="Número">
+                <h:outputText value="#{f.numeroFactura}"/>
+            </p:column>
+            <p:column headerText="CAI">
+                <h:outputText value="#{f.cai}"/>
+            </p:column>
+            <p:column headerText="Fecha">
+                <h:outputText value="#{f.fechaFactura}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Total">
+                <h:outputText value="#{f.total}">
+                    <f:convertNumber pattern="$#,##0.00"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Acciones">
+                <p:commandButton value="Ver detalle" actionListener="#{facturaBean.obtenerDetalles()}" update=":formHistorial:dialogDetalle" oncomplete="PF('dlgDetalle').show()"/>
+            </p:column>
+        </p:dataTable>
+
+        <p:dialog header="Detalle de Factura" widgetVar="dlgDetalle" id="dialogDetalle" modal="true" resizable="false">
+            <p:dataTable value="#{facturaBean.detalleActual}" var="d">
+                <p:column headerText="Producto">
+                    <h:outputText value="#{d.idProducto}"/>
+                </p:column>
+                <p:column headerText="Cantidad">
+                    <h:outputText value="#{d.cantidad}"/>
+                </p:column>
+                <p:column headerText="Precio Unitario">
+                    <h:outputText value="#{d.precioUnitario}">
+                        <f:convertNumber pattern="$#,##0.00"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Subtotal">
+                    <h:outputText value="#{d.subtotal}">
+                        <f:convertNumber pattern="$#,##0.00"/>
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+        </p:dialog>
+    </h:form>
+</h:body>
+</html>
