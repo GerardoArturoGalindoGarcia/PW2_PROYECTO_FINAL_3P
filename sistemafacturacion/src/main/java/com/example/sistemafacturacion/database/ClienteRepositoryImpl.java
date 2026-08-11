@@ -21,14 +21,22 @@ public class ClienteRepositoryImpl implements ClienteRepository {
         String sql = "INSERT INTO Clientes (nombre, rtn, email, telefono, direccion, ciudad) " +
                      "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, cliente.getNombre());
             pstmt.setString(2, cliente.getRtn());
             pstmt.setString(3, cliente.getEmail());
             pstmt.setString(4, cliente.getTelefono());
             pstmt.setString(5, cliente.getDireccion());
             pstmt.setString(6, cliente.getCiudad());
-            pstmt.executeUpdate();
+            int affected = pstmt.executeUpdate();
+            if (affected == 0) {
+                throw new SQLException("No se pudo crear el cliente");
+            }
+            try (ResultSet keys = pstmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    cliente.setIdCliente(keys.getInt(1));
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

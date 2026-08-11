@@ -35,5 +35,6 @@ com\example\sistemafacturacion\interfaces\repository\FacturaRepository.class
 com\example\sistemafacturacion\beans\UsuarioBean.class
 com\example\sistemafacturacion\interfaces\interactor\FacturaInteractor.class
 com\example\sistemafacturacion\beans\CAIBean.class
+com\example\sistemafacturacion\converters\ProductoConverter.class
 com\example\sistemafacturacion\data\DetalleFactura.class
 com\example\sistemafacturacion\services\CAIService.class

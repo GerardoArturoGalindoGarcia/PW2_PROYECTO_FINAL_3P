@@ -49,7 +49,10 @@ public class DetalleFacturaRepositoryImpl implements DetalleFacturaRepository {
     @Override
     public List<DetalleFactura> obtenerPorFactura(int idFactura) {
         List<DetalleFactura> detalles = new ArrayList<>();
-        String sql = "SELECT * FROM DetalleFacturas WHERE idFactura = ?";
+        String sql = "SELECT df.*, p.nombre AS productoNombre " +
+                "FROM DetalleFacturas df " +
+                "LEFT JOIN Productos p ON df.idProducto = p.idProducto " +
+                "WHERE df.idFactura = ?";
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idFactura);
@@ -59,6 +62,7 @@ public class DetalleFacturaRepositoryImpl implements DetalleFacturaRepository {
                     d.setIdDetalle(rs.getInt("idDetalle"));
                     d.setIdFactura(rs.getInt("idFactura"));
                     d.setIdProducto(rs.getInt("idProducto"));
+                    d.setNombreProducto(rs.getString("productoNombre"));
                     d.setCantidad(rs.getInt("cantidad"));
                     d.setPrecioUnitario(rs.getDouble("precioUnitario"));
                     d.setSubtotal(rs.getDouble("subtotal"));
@@ -75,7 +79,7 @@ public class DetalleFacturaRepositoryImpl implements DetalleFacturaRepository {
     public List<DetalleFactura> obtenerPorFacturaConConexion(Connection conn, int idFactura) throws Exception {
         List<DetalleFactura> detalles = new ArrayList<>();
         String sql = "SELECT df.*, p.nombre as productoNombre FROM DetalleFacturas df " +
-                     "LEFT JOIN Productos p ON df.idProducto = p.idProducto WHERE idFactura = ?";
+                     "LEFT JOIN Productos p ON df.idProducto = p.idProducto WHERE df.idFactura = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, idFactura);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -84,6 +88,7 @@ public class DetalleFacturaRepositoryImpl implements DetalleFacturaRepository {
                     d.setIdDetalle(rs.getInt("idDetalle"));
                     d.setIdFactura(rs.getInt("idFactura"));
                     d.setIdProducto(rs.getInt("idProducto"));
+                    d.setNombreProducto(rs.getString("productoNombre"));
                     d.setCantidad(rs.getInt("cantidad"));
                     d.setPrecioUnitario(rs.getDouble("precioUnitario"));
                     d.setSubtotal(rs.getDouble("subtotal"));

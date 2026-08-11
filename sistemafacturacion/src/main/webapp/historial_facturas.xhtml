@@ -11,8 +11,21 @@
 
 <h:body>
     <h:form id="formHistorial">
+        <p:toolbar style="margin-bottom:12px;">
+            <p:toolbarGroup>
+                <span style="font-size:20px;font-weight:bold;">
+                    <i class="pi pi-history"></i>
+                    Historial de Facturas
+                </span>
+            </p:toolbarGroup>
+            <p:toolbarGroup>
+                <p:button value="Volver a Facturas" icon="pi pi-arrow-left" outcome="facturas" style="margin-right:8px;"/>
+                <p:button value="Inicio" icon="pi pi-home" outcome="inicio" severity="secondary"/>
+            </p:toolbarGroup>
+        </p:toolbar>
+
         <p:messages id="messages" showDetail="true" closable="true"/>
-        <p:dataTable id="tablaFacturas" value="#{facturaBean.listaFacturas}" var="f" paginator="true" rows="10" selectionMode="single" selection="#{facturaBean.facturaSeleccionada}">
+        <p:dataTable id="tablaFacturas" value="#{facturaBean.listaFacturas}" var="f" paginator="true" rows="10">
             <p:column headerText="ID">
                 <h:outputText value="#{f.idFactura}"/>
             </p:column>
@@ -29,30 +42,37 @@
             </p:column>
             <p:column headerText="Total">
                 <h:outputText value="#{f.total}">
-                    <f:convertNumber pattern="$#,##0.00"/>
+                    <f:convertNumber pattern="'L' #,##0.00"/>
                 </h:outputText>
             </p:column>
             <p:column headerText="Acciones">
-                <p:commandButton value="Ver detalle" actionListener="#{facturaBean.obtenerDetalles()}" update=":formHistorial:dialogDetalle" oncomplete="PF('dlgDetalle').show()"/>
+                <p:commandButton
+                        value="Ver detalle"
+                        icon="pi pi-eye"
+                        action="#{facturaBean.obtenerDetalles}"
+                        update="dialogDetalle"
+                        oncomplete="PF('dlgDetalle').show()">
+                    <f:setPropertyActionListener target="#{facturaBean.facturaSeleccionada}" value="#{f}"/>
+                </p:commandButton>
             </p:column>
         </p:dataTable>
 
         <p:dialog header="Detalle de Factura" widgetVar="dlgDetalle" id="dialogDetalle" modal="true" resizable="false">
             <p:dataTable value="#{facturaBean.detalleActual}" var="d">
                 <p:column headerText="Producto">
-                    <h:outputText value="#{d.idProducto}"/>
+                    <h:outputText value="#{empty d.nombreProducto ? d.idProducto : d.nombreProducto}"/>
                 </p:column>
                 <p:column headerText="Cantidad">
                     <h:outputText value="#{d.cantidad}"/>
                 </p:column>
                 <p:column headerText="Precio Unitario">
                     <h:outputText value="#{d.precioUnitario}">
-                        <f:convertNumber pattern="$#,##0.00"/>
+                        <f:convertNumber pattern="'L' #,##0.00"/>
                     </h:outputText>
                 </p:column>
                 <p:column headerText="Subtotal">
                     <h:outputText value="#{d.subtotal}">
-                        <f:convertNumber pattern="$#,##0.00"/>
+                        <f:convertNumber pattern="'L' #,##0.00"/>
                     </h:outputText>
                 </p:column>
             </p:dataTable>

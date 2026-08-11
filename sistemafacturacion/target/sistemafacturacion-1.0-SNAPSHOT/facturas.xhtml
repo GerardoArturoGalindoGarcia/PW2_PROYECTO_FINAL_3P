@@ -35,6 +35,13 @@
             <p:toolbarGroup>
 
                 <p:button
+                        value="Historial Facturas"
+                        icon="pi pi-history"
+                        outcome="historial_facturas"
+                        severity="contrast"
+                        style="margin-right:10px;"/>
+
+                <p:button
                         value="Volver a Inicio"
                         icon="pi pi-home"
                         outcome="inicio"
@@ -215,6 +222,7 @@
                             id="producto"
                             value="#{facturaBean.productoSeleccionado}"
                             completeMethod="#{facturaBean.completarProductos}"
+                            converter="productoConverter"
                             var="p"
                             itemLabel="#{p.nombre}"
                             itemValue="#{p}"
@@ -248,17 +256,19 @@
                             id="precioUnitario"
                             value="#{facturaBean.precioUnitarioLinea}"
                             symbol="L "
-                            decimalPlaces="2"
-                            disabled="true"/>
+                            decimalPlaces="2"/>
 
 
                     <p:outputLabel value=""/>
 
                     <p:commandButton
+                            id="btnAgregarProducto"
                             value="Agregar Producto"
                             icon="pi pi-plus"
-                            actionListener="#{facturaBean.agregarLinea}"
-                            update="detalleTable subtotal total messages"/>
+                            action="#{facturaBean.agregarLinea}"
+                            process="@this producto cantidad"
+                            update="detalleTable subtotal total precioUnitario messages"
+                            style="margin-top:10px;"/>
 
                 </p:panelGrid>
 
@@ -292,7 +302,7 @@
                     <p:column headerText="Producto">
 
                         <h:outputText
-                                value="#{d.idProducto}"/>
+                                value="#{empty d.nombreProducto ? d.idProducto : d.nombreProducto}"/>
 
                     </p:column>
 
@@ -396,15 +406,18 @@
                         value="Crear Factura"
                         icon="pi pi-plus"
                         action="#{facturaBean.crearFactura}"
+                        process="@this"
+                        immediate="true"
                         update="@form"
                         style="margin-top:10px;"/>
 
 
                 <p:commandButton
-                        value="Guardar"
+                        value="Guardar Factura"
                         icon="pi pi-save"
                         action="#{facturaBean.guardarFactura}"
-                        update="@form"
+                        process="@this cliente clienteNoRegistrado descuento"
+                        update="@form dataTableFacturas messages"
                         style="margin-left:10px;margin-top:10px;"/>
 
             </p:card>
@@ -529,6 +542,7 @@
                                     title="Ver"
                                     action="#{facturaBean.obtenerDetalles}"
                                     update="detalleDialog"
+                                    oncomplete="PF('detalleDialogWidget').show()"
                                     styleClass="ui-button-rounded ui-button-text"
                                     style="margin-right:5px;">
 
@@ -582,7 +596,7 @@
                     <p:column headerText="Producto">
 
                         <h:outputText
-                                value="#{detalle.idProducto}"/>
+                                value="#{empty detalle.nombreProducto ? detalle.idProducto : detalle.nombreProducto}"/>
 
                     </p:column>
 

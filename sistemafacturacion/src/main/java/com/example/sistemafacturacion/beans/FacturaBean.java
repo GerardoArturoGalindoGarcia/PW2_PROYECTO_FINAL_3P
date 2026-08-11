@@ -17,6 +17,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import org.primefaces.event.SelectEvent;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -171,89 +172,91 @@ public class FacturaBean implements FacturaViewModel, Serializable {
         return productoService.buscarProductos(query);
     }
 
-    public void onProductoSelect() {
+    public void onProductoSelect(SelectEvent<Producto> event) {
 
-        if (productoSeleccionado != null) {
-
-            this.precioUnitarioLinea =
-                    productoSeleccionado.getPrecioVenta();
-        } else {
-
+        if (event == null || event.getObject() == null) {
             this.precioUnitarioLinea = 0;
+            return;
         }
+
+        this.productoSeleccionado = event.getObject();
+        this.precioUnitarioLinea = productoSeleccionado.getPrecioVenta();
     }
 
     public void agregarLinea() {
 
         if (productoSeleccionado == null) {
-
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(
                             FacesMessage.SEVERITY_WARN,
-                            "Advertencia",
-                            "Seleccione un producto"
+                            "Producto",
+                            "Debe seleccionar un producto"
                     )
             );
-
             return;
         }
 
         if (cantidadLinea <= 0) {
-
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(
                             FacesMessage.SEVERITY_WARN,
                             "Cantidad",
-                            "La cantidad debe ser mayor que cero"
+                            "La cantidad debe ser mayor que 0"
                     )
             );
-
             return;
         }
 
-        if (precioUnitarioLinea <= 0) {
+        // Obtener nuevamente el producto desde la base de datos
+        // para asegurarnos de tener precio y stock actualizados.
+        Producto productoActual =
+                productoService.obtenerPorId(
+                        productoSeleccionado.getIdProducto()
+                );
 
+        if (productoActual == null) {
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(
-                            FacesMessage.SEVERITY_WARN,
-                            "Precio",
-                            "El precio unitario no es válido"
+                            FacesMessage.SEVERITY_ERROR,
+                            "Producto",
+                            "No se encontró el producto seleccionado"
                     )
             );
-
             return;
         }
 
-        boolean stockDisponible =
-                productoService.verificarStock(
-                        productoSeleccionado.getIdProducto(),
-                        cantidadLinea
-                );
+        // Actualizar precio desde la base de datos
+        precioUnitarioLinea =
+                productoActual.getPrecioVenta();
 
-        if (!stockDisponible) {
-
+        // Verificar stock
+        if (productoActual.getStock() < cantidadLinea) {
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(
                             FacesMessage.SEVERITY_WARN,
                             "Stock",
-                            "No hay stock suficiente para el producto seleccionado"
+                            "No hay stock suficiente. Stock disponible: "
+                                    + productoActual.getStock()
                     )
             );
-
             return;
         }
 
+        // Crear detalle
         DetalleFactura detalle = new DetalleFactura();
 
         detalle.setIdProducto(
-                productoSeleccionado.getIdProducto()
+                productoActual.getIdProducto()
         );
+        detalle.setNombreProducto(productoActual.getNombre());
 
-        detalle.setCantidad(cantidadLinea);
+        detalle.setCantidad(
+                cantidadLinea
+        );
 
         detalle.setPrecioUnitario(
                 precioUnitarioLinea
@@ -265,15 +268,24 @@ public class FacturaBean implements FacturaViewModel, Serializable {
 
         detalleActual.add(detalle);
 
+        // Recalcular
         recalcularSubtotal();
 
-        // Limpiar producto
-        this.productoSeleccionado = null;
-        this.criterioProducto = null;
-        this.cantidadLinea = 1;
-        this.precioUnitarioLinea = 0;
-    }
+        // Limpiar selección
+        productoSeleccionado = null;
+        criterioProducto = null;
+        cantidadLinea = 1;
+        precioUnitarioLinea = 0;
 
+        FacesContext.getCurrentInstance().addMessage(
+                null,
+                new FacesMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        "Producto",
+                        "Producto agregado correctamente"
+                )
+        );
+    }
     public void eliminarLinea(DetalleFactura detalle) {
 
         if (detalle != null) {
@@ -414,17 +426,19 @@ public class FacturaBean implements FacturaViewModel, Serializable {
                     LocalDateTime.now()
             );
 
-            if (clienteSeleccionado != null) {
-
-                factura.setIdCliente(
-                        clienteSeleccionado.getIdCliente()
+            Cliente clienteFactura = resolverClienteParaFactura();
+            if (clienteFactura == null || clienteFactura.getIdCliente() <= 0) {
+                FacesContext.getCurrentInstance().addMessage(
+                        null,
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_WARN,
+                                "Cliente",
+                                "Debe seleccionar un cliente o escribir el nombre del cliente no registrado"
+                        )
                 );
-
-            } else {
-
-                // Cliente no registrado
-                factura.setIdCliente(0);
+                return;
             }
+            factura.setIdCliente(clienteFactura.getIdCliente());
 
             factura.setSubtotal(subtotal);
 
@@ -488,6 +502,31 @@ public class FacturaBean implements FacturaViewModel, Serializable {
                     )
             );
         }
+    }
+
+    private Cliente resolverClienteParaFactura() {
+        if (clienteSeleccionado != null && clienteSeleccionado.getIdCliente() > 0) {
+            return clienteSeleccionado;
+        }
+
+        if (clienteNoRegistradoNombre == null || clienteNoRegistradoNombre.trim().isEmpty()) {
+            return null;
+        }
+
+        Cliente clienteTemporal = new Cliente();
+        clienteTemporal.setNombre(clienteNoRegistradoNombre.trim());
+        clienteTemporal.setRtn("CF-" + System.currentTimeMillis());
+        clienteTemporal.setEmail(null);
+        clienteTemporal.setTelefono(null);
+        clienteTemporal.setDireccion(null);
+        clienteTemporal.setCiudad(null);
+        clienteTemporal.setEstado("activo");
+
+        Cliente creado = clienteService.registrarCliente(clienteTemporal);
+        if (creado == null || creado.getIdCliente() <= 0) {
+            throw new RuntimeException("No se pudo registrar el cliente no registrado");
+        }
+        return creado;
     }
 
     // ==============================
