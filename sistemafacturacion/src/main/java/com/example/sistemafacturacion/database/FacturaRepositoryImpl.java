@@ -21,10 +21,20 @@ public class FacturaRepositoryImpl implements FacturaRepository {
 
     @Override
     public Factura crear(Factura factura) {
+        // Mantener compatibilidad: delegar a la versión con Connection propia
+        try (Connection conn = dbConnection.getConnection()) {
+            return crearConConexion(conn, factura);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return factura;
+        }
+    }
+
+    // Inserta la factura usando la conexión proporcionada (útil para transacciones)
+    public Factura crearConConexion(Connection conn, Factura factura) throws SQLException {
         String sql = "INSERT INTO Facturas (numeroFactura, cai, idCliente, fechaFactura, " +
-                     "subtotal, descuento, impuesto, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                     "subtotal, descuento, impuesto, total, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, factura.getNumeroFactura());
             pstmt.setString(2, factura.getCai());
             pstmt.setInt(3, factura.getIdCliente());
@@ -33,9 +43,16 @@ public class FacturaRepositoryImpl implements FacturaRepository {
             pstmt.setDouble(6, factura.getDescuento());
             pstmt.setDouble(7, factura.getImpuesto());
             pstmt.setDouble(8, factura.getTotal());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            pstmt.setString(9, factura.getEstado() == null ? "activo" : factura.getEstado());
+            int affected = pstmt.executeUpdate();
+            if (affected == 0) throw new SQLException("Crear factura falló, ninguna fila afectada.");
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    factura.setIdFactura(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Crear factura falló, no se obtuvo id.");
+                }
+            }
         }
         return factura;
     }
