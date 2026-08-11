@@ -22,27 +22,93 @@
             <p:messages id="messages" showDetail="true" closable="true"/>
             
             <p:panel header="Crear Nueva Factura" styleClass="card" style="margin-bottom: 20px;">
-                <div class="form-group">
-                    <label>Número Factura:</label>
-                    <p:inputNumber value="#{facturaBean.numeroFactura}" required="true"/>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label>Número Factura:</label>
+                        <!-- Número autocompletado desde CAI activo (solo lectura) -->
+                        <p:inputNumber value="#{facturaBean.numeroFactura}" disabled="true"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>CAI:</label>
+                        <p:inputText value="#{facturaBean.caiActivo.cai}" disabled="true"/>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Vencimiento CAI:</label>
+                        <p:inputText value="#{facturaBean.caiActivo.fechaVencimiento}" disabled="true"/>
+                    </div>
                 </div>
-                <div class="form-group">
+
+                <div class="form-row" style="margin-top:10px;">
+                    <div class="form-group col-md-6">
+                        <label>Cliente (autocomplete):</label>
+                        <p:autoComplete value="#{facturaBean.clienteSeleccionado}" completeMethod="#{facturaBean.completarClientes}" var="c"
+                                                                itemLabel="#{c.nombre}" itemValue="#{c}" forceSelection="false"/>
+                        <p:inputText value="#{facturaBean.clienteNoRegistradoNombre}" placeholder="Nombre si no está registrado"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Descuento (%):</label>
+                        <p:inputNumber value="#{facturaBean.descuento}" decimalPlaces="2">
+                            <p:ajax event="change" listener="#{facturaBean.onValoresFinancierosChange}" update="subtotal total"/>
+                        </p:inputNumber>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Impuesto (%):</label>
+                        <p:inputNumber value="#{facturaBean.impuesto}" decimalPlaces="2">
+                            <p:ajax event="change" listener="#{facturaBean.onValoresFinancierosChange}" update="subtotal total"/>
+                        </p:inputNumber>
+                    </div>
+                </div>
+
+                <h:panelGroup>
+                    <h3>Agregar Producto</h3>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <p:autoComplete value="#{facturaBean.productoSeleccionado}" completeMethod="#{facturaBean.completarProductos}" var="p"
+                                                                        itemLabel="#{p.nombre}" itemValue="#{p}" forceSelection="true"/>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <p:inputNumber value="#{facturaBean.cantidadLinea}" minValue="1"/>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <p:inputNumber value="#{facturaBean.precioUnitarioLinea}" symbol="$" decimalPlaces="2"/>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <p:commandButton value="Agregar" actionListener="#{facturaBean.agregarLinea}" update="detalleTable subtotal total messages"/>
+                        </div>
+                    </div>
+                </h:panelGroup>
+
+                <p:dataTable id="detalleTable" value="#{facturaBean.detalleActual}" var="d" editable="true" style="margin-top:10px;">
+                    <p:column headerText="Producto">
+                        <h:outputText value="#{d.idProducto}"/>
+                    </p:column>
+                    <p:column headerText="Cantidad">
+                        <h:outputText value="#{d.cantidad}"/>
+                    </p:column>
+                    <p:column headerText="Precio Unitario">
+                        <h:outputText value="#{d.precioUnitario}">
+                            <f:convertNumber pattern="$#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Subtotal">
+                        <h:outputText value="#{d.subtotal}">
+                            <f:convertNumber pattern="$#,##0.00"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Acciones">
+                        <p:commandButton value="Eliminar" actionListener="#{facturaBean.eliminarLinea(d)}" update="detalleTable subtotal total messages"/>
+                    </p:column>
+                </p:dataTable>
+
+                <div style="margin-top:10px; text-align:right;">
                     <label>Subtotal:</label>
-                    <p:inputNumber value="#{facturaBean.subtotal}" symbol="$" decimalPlaces="2"/>
+                    <p:inputNumber id="subtotal" value="#{facturaBean.subtotal}" symbol="$" decimalPlaces="2" disabled="true"/>
+                    <label>Total:</label>
+                    <p:inputNumber id="total" value="#{facturaBean.total}" symbol="$" decimalPlaces="2" disabled="true"/>
                 </div>
-                <div class="form-group">
-                    <label>Descuento (%):</label>
-                    <p:inputNumber value="#{facturaBean.descuento}" decimalPlaces="2"/>
-                </div>
-                <div class="form-group">
-                    <label>Impuesto (%):</label>
-                    <p:inputNumber value="#{facturaBean.impuesto}" decimalPlaces="2"/>
-                </div>
-                
-                <p:commandButton value="Crear Factura" actionListener="#{facturaBean.crearFactura()}"
-                                update="messages" icon="pi pi-plus"/>
-                <p:commandButton value="Guardar" actionListener="#{facturaBean.guardarFactura()}"
-                                update="messages,dataTableFacturas" icon="pi pi-save" style="margin-left: 10px;"/>
+
+                <p:commandButton value="Crear Factura" actionListener="#{facturaBean.crearFactura()}" update="messages" icon="pi pi-plus" style="margin-top:10px;"/>
+                <p:commandButton value="Guardar" actionListener="#{facturaBean.guardarFactura()}" update=":formFactura:messages,:formFactura:dataTableFacturas" icon="pi pi-save" style="margin-left: 10px; margin-top:10px;"/>
             </p:panel>
             
             <p:dataTable id="dataTableFacturas" value="#{facturaBean.listaFacturas}" var="factura"

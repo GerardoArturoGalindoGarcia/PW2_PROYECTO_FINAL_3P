@@ -142,14 +142,21 @@ public class CAIRepositoryImpl implements CAIRepository {
 
     @Override
     public void actualizarSiguienteFactura(int idCAI, int siguiente) {
+        // Delegar a la versión con Connection propia
+        try (Connection conn = dbConnection.getConnection()) {
+            actualizarSiguienteFactura(conn, idCAI, siguiente);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Versión que participa en transacciones externas
+    public void actualizarSiguienteFactura(Connection conn, int idCAI, int siguiente) throws SQLException {
         String sql = "UPDATE CAI SET siguienteFactura = ? WHERE idCAI = ?";
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, siguiente);
             pstmt.setInt(2, idCAI);
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 

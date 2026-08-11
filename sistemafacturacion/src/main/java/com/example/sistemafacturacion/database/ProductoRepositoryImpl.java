@@ -121,6 +121,7 @@ public class ProductoRepositoryImpl implements ProductoRepository {
 
     @Override
     public void actualizarStock(int idProducto, int cantidad) {
+        // Mantener comportamiento original usando una nueva conexión
         String sql = "UPDATE Productos SET stock = stock - ? WHERE idProducto = ?";
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -129,6 +130,16 @@ public class ProductoRepositoryImpl implements ProductoRepository {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Versión que usa la conexión proporcionada para participar en transacciones externas
+    public void actualizarStockConConexion(Connection conn, int idProducto, int cantidad) throws SQLException {
+        String sql = "UPDATE Productos SET stock = stock - ? WHERE idProducto = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, cantidad);
+            pstmt.setInt(2, idProducto);
+            pstmt.executeUpdate();
         }
     }
 

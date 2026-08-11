@@ -3,6 +3,10 @@ package com.example.sistemafacturacion.services;
 import com.example.sistemafacturacion.data.Factura;
 import com.example.sistemafacturacion.data.DetalleFactura;
 import com.example.sistemafacturacion.database.FacturaRepositoryImpl;
+import com.example.sistemafacturacion.database.DetalleFacturaRepositoryImpl;
+import com.example.sistemafacturacion.database.CAIRepositoryImpl;
+import com.example.sistemafacturacion.database.ProductoRepositoryImpl;
+import com.example.sistemafacturacion.database.DatabaseConnection;
 import com.example.sistemafacturacion.interfaces.interactor.FacturaInteractor;
 import com.example.sistemafacturacion.interfaces.repository.FacturaRepository;
 import java.time.LocalDateTime;
@@ -17,7 +21,46 @@ public class FacturaService implements FacturaInteractor {
 
     @Override
     public Factura crearFactura(Factura factura, List<DetalleFactura> detalles) {
-        return facturaRepository.crear(factura);
+        // Orquestar inserción de factura y detalles en una sola transacción JDBC
+        DatabaseConnection db = DatabaseConnection.getInstance();
+        FacturaRepositoryImpl facturaRepoImpl = (FacturaRepositoryImpl) this.facturaRepository;
+        DetalleFacturaRepositoryImpl detalleRepo = new DetalleFacturaRepositoryImpl();
+        CAIRepositoryImpl caiRepo = new CAIRepositoryImpl();
+        ProductoRepositoryImpl productoRepo = new ProductoRepositoryImpl();
+
+        java.sql.Connection conn = null;
+        try {
+            conn = db.getConnection();
+            conn.setAutoCommit(false);
+
+            // Insertar cabecera y obtener id generado
+            Factura facturaCreada = facturaRepoImpl.crearConConexion(conn, factura);
+
+            // Insertar cada detalle con la misma conexión
+            for (DetalleFactura d : detalles) {
+                d.setIdFactura(facturaCreada.getIdFactura());
+                detalleRepo.crearConConexion(conn, d);
+                // Reducir stock usando la misma conexión
+                productoRepo.actualizarStockConConexion(conn, d.getIdProducto(), d.getCantidad());
+            }
+
+            // Actualizar siguienteFactura del CAI activo
+            CAIService caiService = new CAIService();
+            com.example.sistemafacturacion.data.CAI caiActivo = caiService.obtenerCAIActivo();
+            if (caiActivo != null) {
+                int siguiente = caiActivo.getSiguienteFactura() + 1;
+                caiRepo.actualizarSiguienteFactura(conn, caiActivo.getIdCAI(), siguiente);
+            }
+
+            conn.commit();
+            return facturaCreada;
+        } catch (Exception e) {
+            try { if (conn != null) conn.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+            throw new RuntimeException("Error al crear factura: " + e.getMessage());
+        } finally {
+            try { if (conn != null) conn.setAutoCommit(true); } catch (Exception ex) { ex.printStackTrace(); }
+        }
     }
 
     @Override
