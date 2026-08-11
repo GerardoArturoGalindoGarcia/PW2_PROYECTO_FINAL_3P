@@ -51,7 +51,7 @@ LIBRERIAS Y TECNOLOGIAS
 DETALLE DE MVC
 
 * Crear interfaces java para definir el contrato de la vista. el controlador y el modelo, estos deben de definir las operaciones aceptadas a ser implementadas por cada capa.
-* Las interfaces seran nombradas: Interfaz del Modelo : Repository, Interfaz del Controlador: Interactor, Interfaz de la Vista: ViewModel.
+* Las interfaces seran nombradas: Interfaz del Modelo: Repository, Interfaz del Controlador: Interactor, Interfaz de la Vista: ViewModel.
 * Crear las implementaciones de cada etapa del MVC, estas deben de implementar las interfaces definidas en el paso anterior.
 * Las vistas serian los beans, los cuales deberian de implementar la interfaz de la vista.
 * Crea un package para separar las diferentes capas del MVC, por ejemplo: controlador, vista, modelo, servicios, etc.
