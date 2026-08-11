@@ -12,7 +12,7 @@
 
 <h:body>
 
-    <div style="padding: 20px;">
+    <div style="padding:20px;">
 
         <!-- ========================= -->
         <!-- BARRA SUPERIOR -->
@@ -22,10 +22,13 @@
 
             <p:toolbarGroup>
 
-                <span style="font-size: 22px; font-weight: bold;">
-                    <i class="pi pi-receipt"></i>
-                    Gestión de Facturas
-                </span>
+            <span style="font-size:22px;font-weight:bold;">
+
+                <i class="pi pi-receipt"></i>
+
+                Gestión de Facturas
+
+            </span>
 
             </p:toolbarGroup>
 
@@ -56,13 +59,17 @@
             <!-- CREAR FACTURA -->
             <!-- ========================= -->
 
-            <p:card>
+            <p:card style="margin-top:20px;">
 
                 <f:facet name="title">
+
+                <span>
 
                     <i class="pi pi-file-plus"></i>
 
                     Crear Nueva Factura
+
+                </span>
 
                 </f:facet>
 
@@ -110,7 +117,7 @@
 
 
                 <!-- ========================= -->
-                <!-- CLIENTE Y VALORES -->
+                <!-- CLIENTE -->
                 <!-- ========================= -->
 
                 <p:panelGrid
@@ -129,7 +136,8 @@
                             var="c"
                             itemLabel="#{c.nombre}"
                             itemValue="#{c}"
-                            forceSelection="false"/>
+                            forceSelection="false"
+                            dropdown="true"/>
 
 
                     <p:outputLabel
@@ -149,7 +157,10 @@
                     <p:inputNumber
                             id="descuento"
                             value="#{facturaBean.descuento}"
-                            decimalPlaces="2">
+                            minValue="0"
+                            maxValue="100"
+                            decimalPlaces="2"
+                            symbol="%">
 
                         <p:ajax
                                 event="change"
@@ -166,14 +177,11 @@
                     <p:inputNumber
                             id="impuesto"
                             value="#{facturaBean.impuesto}"
-                            decimalPlaces="2">
-
-                        <p:ajax
-                                event="change"
-                                listener="#{facturaBean.onValoresFinancierosChange}"
-                                update="subtotal total"/>
-
-                    </p:inputNumber>
+                            minValue="15"
+                            maxValue="15"
+                            decimalPlaces="2"
+                            symbol="%"
+                            disabled="true"/>
 
                 </p:panelGrid>
 
@@ -185,14 +193,13 @@
                 <!-- AGREGAR PRODUCTO -->
                 <!-- ========================= -->
 
-                <f:facet name="footer">
+                <h3 style="margin-top:0;">
 
-                    <h3 style="margin-top: 0;">
-                        <i class="pi pi-box"></i>
-                        Agregar Producto
-                    </h3>
+                    <i class="pi pi-box"></i>
 
-                </f:facet>
+                    Agregar Producto
+
+                </h3>
 
 
                 <p:panelGrid
@@ -211,7 +218,15 @@
                             var="p"
                             itemLabel="#{p.nombre}"
                             itemValue="#{p}"
-                            forceSelection="true"/>
+                            forceSelection="true"
+                            dropdown="true">
+
+                        <p:ajax
+                                event="itemSelect"
+                                listener="#{facturaBean.onProductoSelect}"
+                                update="precioUnitario"/>
+
+                    </p:autoComplete>
 
 
                     <p:outputLabel
@@ -221,7 +236,8 @@
                     <p:inputNumber
                             id="cantidad"
                             value="#{facturaBean.cantidadLinea}"
-                            minValue="1"/>
+                            minValue="1"
+                            decimalPlaces="0"/>
 
 
                     <p:outputLabel
@@ -231,11 +247,12 @@
                     <p:inputNumber
                             id="precioUnitario"
                             value="#{facturaBean.precioUnitarioLinea}"
-                            symbol="$"
-                            decimalPlaces="2"/>
+                            symbol="L "
+                            decimalPlaces="2"
+                            disabled="true"/>
 
-                    <p:outputLabel
-                            value=""/>
+
+                    <p:outputLabel value=""/>
 
                     <p:commandButton
                             value="Agregar Producto"
@@ -250,10 +267,10 @@
 
 
                 <!-- ========================= -->
-                <!-- DETALLE DE FACTURA -->
+                <!-- DETALLE -->
                 <!-- ========================= -->
 
-                <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
+                <div style="font-size:20px;font-weight:bold;margin-bottom:20px;">
 
                     <i class="pi pi-list"></i>
 
@@ -266,15 +283,13 @@
                         id="detalleTable"
                         value="#{facturaBean.detalleActual}"
                         var="d"
-                        editable="true"
                         stripedRows="true"
                         showGridlines="true"
                         reflow="true"
                         emptyMessage="No hay productos agregados."
                         style="margin-top:10px;">
 
-                    <p:column
-                            headerText="Producto">
+                    <p:column headerText="Producto">
 
                         <h:outputText
                                 value="#{d.idProducto}"/>
@@ -282,8 +297,7 @@
                     </p:column>
 
 
-                    <p:column
-                            headerText="Cantidad">
+                    <p:column headerText="Cantidad">
 
                         <h:outputText
                                 value="#{d.cantidad}"/>
@@ -291,28 +305,26 @@
                     </p:column>
 
 
-                    <p:column
-                            headerText="Precio Unitario">
+                    <p:column headerText="Precio Unitario">
 
                         <h:outputText
                                 value="#{d.precioUnitario}">
 
                             <f:convertNumber
-                                    pattern="$#,##0.00"/>
+                                    pattern="'L' #,##0.00"/>
 
                         </h:outputText>
 
                     </p:column>
 
 
-                    <p:column
-                            headerText="Subtotal">
+                    <p:column headerText="Subtotal">
 
                         <h:outputText
                                 value="#{d.subtotal}">
 
                             <f:convertNumber
-                                    pattern="$#,##0.00"/>
+                                    pattern="'L' #,##0.00"/>
 
                         </h:outputText>
 
@@ -354,7 +366,7 @@
                     <p:inputNumber
                             id="subtotal"
                             value="#{facturaBean.subtotal}"
-                            symbol="$"
+                            symbol="L "
                             decimalPlaces="2"
                             disabled="true"/>
 
@@ -366,7 +378,7 @@
                     <p:inputNumber
                             id="total"
                             value="#{facturaBean.total}"
-                            symbol="$"
+                            symbol="L "
                             decimalPlaces="2"
                             disabled="true"/>
 
@@ -383,17 +395,17 @@
                 <p:commandButton
                         value="Crear Factura"
                         icon="pi pi-plus"
-                        actionListener="#{facturaBean.crearFactura()}"
-                        update="messages"
+                        action="#{facturaBean.crearFactura}"
+                        update="@form"
                         style="margin-top:10px;"/>
 
 
                 <p:commandButton
                         value="Guardar"
                         icon="pi pi-save"
-                        actionListener="#{facturaBean.guardarFactura()}"
-                        update=":formFactura:messages :formFactura:dataTableFacturas"
-                        style="margin-left:10px; margin-top:10px;"/>
+                        action="#{facturaBean.guardarFactura}"
+                        update="@form"
+                        style="margin-left:10px;margin-top:10px;"/>
 
             </p:card>
 
@@ -402,17 +414,21 @@
             <!-- FACTURAS REGISTRADAS -->
             <!-- ========================= -->
 
-            <div style="margin-top: 20px;">
+            <div style="margin-top:20px;">
 
                 <p:card>
 
-                    <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
+                    <f:facet name="title">
+
+                    <span>
 
                         <i class="pi pi-list"></i>
 
                         Facturas Registradas
 
-                    </div>
+                    </span>
+
+                    </f:facet>
 
 
                     <p:dataTable
@@ -444,7 +460,7 @@
                         </p:column>
 
 
-                        <!-- NÚMERO -->
+                        <!-- NUMERO -->
 
                         <p:column
                                 headerText="Número"
@@ -495,7 +511,7 @@
                                     value="#{factura.total}">
 
                                 <f:convertNumber
-                                        pattern="$#,##0.00"/>
+                                        pattern="'L' #,##0.00"/>
 
                             </h:outputText>
 
@@ -506,22 +522,36 @@
 
                         <p:column
                                 headerText="Acciones"
-                                style="width:180px; text-align:center;">
+                                style="width:180px;text-align:center;">
 
                             <p:commandButton
                                     icon="pi pi-eye"
                                     title="Ver"
+                                    action="#{facturaBean.obtenerDetalles}"
+                                    update="detalleDialog"
                                     styleClass="ui-button-rounded ui-button-text"
-                                    style="margin-right:5px;"/>
+                                    style="margin-right:5px;">
+
+                                <f:setPropertyActionListener
+                                        target="#{facturaBean.facturaSeleccionada}"
+                                        value="#{factura}"/>
+
+                            </p:commandButton>
 
 
                             <p:commandButton
                                     icon="pi pi-download"
                                     title="PDF"
-                                    styleClass="ui-button-rounded ui-button-text"/>
+                                    action="#{facturaBean.generarPDF}"
+                                    styleClass="ui-button-rounded ui-button-text">
+
+                                <f:setPropertyActionListener
+                                        target="#{facturaBean.facturaSeleccionada}"
+                                        value="#{factura}"/>
+
+                            </p:commandButton>
 
                         </p:column>
-
 
                     </p:dataTable>
 
@@ -529,6 +559,67 @@
 
             </div>
 
+
+            <!-- ========================= -->
+            <!-- DIALOG DETALLES -->
+            <!-- ========================= -->
+
+            <p:dialog
+                    id="detalleDialog"
+                    widgetVar="detalleDialogWidget"
+                    header="Detalle de Factura"
+                    modal="true"
+                    responsive="true"
+                    width="700">
+
+                <p:dataTable
+                        value="#{facturaBean.detalleActual}"
+                        var="detalle"
+                        stripedRows="true"
+                        showGridlines="true"
+                        emptyMessage="No hay detalles.">
+
+                    <p:column headerText="Producto">
+
+                        <h:outputText
+                                value="#{detalle.idProducto}"/>
+
+                    </p:column>
+
+                    <p:column headerText="Cantidad">
+
+                        <h:outputText
+                                value="#{detalle.cantidad}"/>
+
+                    </p:column>
+
+                    <p:column headerText="Precio">
+
+                        <h:outputText
+                                value="#{detalle.precioUnitario}">
+
+                            <f:convertNumber
+                                    pattern="'L' #,##0.00"/>
+
+                        </h:outputText>
+
+                    </p:column>
+
+                    <p:column headerText="Subtotal">
+
+                        <h:outputText
+                                value="#{detalle.subtotal}">
+
+                            <f:convertNumber
+                                    pattern="'L' #,##0.00"/>
+
+                        </h:outputText>
+
+                    </p:column>
+
+                </p:dataTable>
+
+            </p:dialog>
 
         </h:form>
 
