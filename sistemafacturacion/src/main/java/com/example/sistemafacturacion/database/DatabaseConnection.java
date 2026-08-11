@@ -172,6 +172,17 @@ public class DatabaseConnection {
                     "FOREIGN KEY(idUsuario) REFERENCES Usuarios(idUsuario))");
 
             System.out.println("Base de datos inicializada correctamente");
+
+            // Seed roles
+            stmt.execute("INSERT OR IGNORE INTO Roles (idRol, nombre, descripcion) " +
+                    "VALUES (1, 'admin', 'Administrador del sistema')");
+            stmt.execute("INSERT OR IGNORE INTO Roles (idRol, nombre, descripcion) " +
+                    "VALUES (2, 'usuario', 'Usuario estándar')");
+
+            // Seed usuario admin por defecto si no existe ninguno con idRol=1
+            stmt.execute("INSERT OR IGNORE INTO Usuarios " +
+                    "(nombreUsuario, contrasena, nombre, apellido, email, idRol, estado) " +
+                    "VALUES ('admin', 'admin123', 'Administrador', 'Sistema', 'admin@sistema.com', 1, 'activo')");
         } catch (SQLException e) {
             e.printStackTrace();
         }

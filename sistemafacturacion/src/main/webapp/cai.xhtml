@@ -39,14 +39,31 @@
 
         <h:form id="formCAI">
 
-
             <p:messages
                     id="messages"
                     showDetail="true"
                     closable="true"/>
 
+            <!-- ACCESO DENEGADO -->
+            <h:panelGroup rendered="#{!sessionBean.admin}">
+                <p:card style="text-align:center;padding:40px;">
+                    <div style="font-size:60px;color:#e74c3c;">
+                        <i class="pi pi-ban"></i>
+                    </div>
+                    <div style="font-size:22px;font-weight:bold;margin:16px 0 8px;">
+                        Acceso Denegado
+                    </div>
+                    <div style="color:#666;margin-bottom:20px;">
+                        Solo el administrador puede gestionar los CAI.
+                    </div>
+                    <p:button value="Volver al Inicio" icon="pi pi-home" outcome="inicio"/>
+                </p:card>
+            </h:panelGroup>
 
-            <p:card>
+            <!-- CONTENIDO SOLO PARA ADMIN -->
+            <h:panelGroup rendered="#{sessionBean.admin}">
+
+                <p:card>
 
                 <f:facet name="title">
 
@@ -306,6 +323,8 @@
 
             </div>
 
+
+        </h:panelGroup>
 
         </h:form>
 

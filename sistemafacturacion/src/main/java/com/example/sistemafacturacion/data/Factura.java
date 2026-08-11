@@ -11,6 +11,7 @@ public class Factura {
     private int numeroFactura;
     private String cai;
     private int idCliente;
+    private String nombreCliente;
     private LocalDateTime fechaFactura;
     private double subtotal;
     private double descuento;
@@ -44,6 +45,8 @@ public class Factura {
     public void setCai(String cai) { this.cai = cai; }
     public int getIdCliente() { return idCliente; }
     public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+    public String getNombreCliente() { return nombreCliente; }
+    public void setNombreCliente(String nombreCliente) { this.nombreCliente = nombreCliente; }
     public LocalDateTime getFechaFactura() { return fechaFactura; }
     public void setFechaFactura(LocalDateTime fechaFactura) { this.fechaFactura = fechaFactura; }
     public String getFechaFacturaFormateada() {
@@ -59,4 +62,12 @@ public class Factura {
     public void setTotal(double total) { this.total = total; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    public double getMontoDescuento() {
+        return subtotal * (descuento / 100.0);
+    }
+
+    public double getMontoISV() {
+        return (subtotal - getMontoDescuento()) * (impuesto / 100.0);
+    }
 }

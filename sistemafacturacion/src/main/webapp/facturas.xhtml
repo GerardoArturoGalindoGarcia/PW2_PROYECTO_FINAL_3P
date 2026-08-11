@@ -35,6 +35,12 @@
             <p:toolbarGroup>
 
                 <p:button
+                        value="Historial"
+                        icon="pi pi-history"
+                        outcome="historial_facturas"
+                        style="margin-right:8px;"/>
+
+                <p:button
                         value="Volver a Inicio"
                         icon="pi pi-home"
                         outcome="inicio"
@@ -136,6 +142,7 @@
                             var="c"
                             itemLabel="#{c.nombre}"
                             itemValue="#{c}"
+                            converter="clienteConverter"
                             forceSelection="false"
                             dropdown="true"/>
 
@@ -218,6 +225,7 @@
                             var="p"
                             itemLabel="#{p.nombre}"
                             itemValue="#{p}"
+                            converter="productoConverter"
                             forceSelection="true"
                             dropdown="true">
 
@@ -491,12 +499,7 @@
                                 sortBy="#{factura.fechaFactura}">
 
                             <h:outputText
-                                    value="#{factura.fechaFactura}">
-
-                                <f:convertDateTime
-                                        pattern="dd/MM/yyyy HH:mm"/>
-
-                            </h:outputText>
+                                    value="#{factura.fechaFacturaFormateada}"/>
 
                         </p:column>
 
@@ -528,7 +531,8 @@
                                     icon="pi pi-eye"
                                     title="Ver"
                                     action="#{facturaBean.obtenerDetalles}"
-                                    update="detalleDialog"
+                                    update=":formFactura:detalleDialog"
+                                    oncomplete="PF('detalleDialogWidget').show()"
                                     styleClass="ui-button-rounded ui-button-text"
                                     style="margin-right:5px;">
 
@@ -541,8 +545,9 @@
 
                             <p:commandButton
                                     icon="pi pi-download"
-                                    title="PDF"
+                                    title="Descargar PDF"
                                     action="#{facturaBean.generarPDF}"
+                                    ajax="false"
                                     styleClass="ui-button-rounded ui-button-text">
 
                                 <f:setPropertyActionListener

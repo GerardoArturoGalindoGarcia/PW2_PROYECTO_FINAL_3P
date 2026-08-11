@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
@@ -50,6 +51,24 @@
                     showDetail="true"
                     closable="true"/>
 
+            <!-- ACCESO DENEGADO -->
+            <h:panelGroup rendered="#{!sessionBean.admin}">
+                <p:card style="text-align:center;padding:40px;">
+                    <div style="font-size:60px;color:#e74c3c;">
+                        <i class="pi pi-ban"></i>
+                    </div>
+                    <div style="font-size:22px;font-weight:bold;margin:16px 0 8px;">
+                        Acceso Denegado
+                    </div>
+                    <div style="color:#666;margin-bottom:20px;">
+                        Solo el administrador puede gestionar los usuarios.
+                    </div>
+                    <p:button value="Volver al Inicio" icon="pi pi-home" outcome="inicio"/>
+                </p:card>
+            </h:panelGroup>
+
+            <!-- CONTENIDO SOLO PARA ADMIN -->
+            <h:panelGroup rendered="#{sessionBean.admin}">
 
             <p:card>
 
@@ -125,6 +144,13 @@
                             required="true"
                             requiredMessage="El correo electrónico es requerido"
                             placeholder="Ingrese el correo electrónico"/>
+
+                    <p:outputLabel for="idRolNuevo" value="Rol"/>
+
+                    <p:selectOneMenu id="idRolNuevo" value="#{usuarioBean.idRolNuevo}">
+                        <f:selectItem itemValue="2" itemLabel="Usuario"/>
+                        <f:selectItem itemValue="1" itemLabel="Administrador"/>
+                    </p:selectOneMenu>
 
                 </p:panelGrid>
 
@@ -229,6 +255,19 @@
                         </p:column>
 
 
+                        <!-- ROL -->
+
+                        <p:column
+                                headerText="Rol"
+                                style="text-align:center">
+
+                            <p:tag
+                                    value="#{usuario.idRol == 1 ? 'Admin' : 'Usuario'}"
+                                    severity="#{usuario.idRol == 1 ? 'warning' : 'info'}"/>
+
+                        </p:column>
+
+
                         <!-- ESTADO -->
 
                         <p:column
@@ -281,8 +320,9 @@
 
             </div>
 
-        </h:form>
+            </h:panelGroup>
 
+        </h:form>
 
         <!-- ========================= -->
         <!-- CONFIRMACIÓN -->

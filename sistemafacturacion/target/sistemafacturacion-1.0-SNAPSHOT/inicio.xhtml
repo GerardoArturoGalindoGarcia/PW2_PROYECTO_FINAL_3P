@@ -155,9 +155,9 @@
         <div class="dashboard">
 
 
-            <!-- USUARIOS -->
+            <!-- USUARIOS (solo admin) -->
 
-            <p:card styleClass="module-card">
+            <p:card styleClass="module-card" rendered="#{sessionBean.admin}">
 
                 <div class="module-icon">
                     <i class="pi pi-users"></i>
@@ -255,9 +255,9 @@
             </p:card>
 
 
-            <!-- CAI -->
+            <!-- CAI (solo admin) -->
 
-            <p:card styleClass="module-card">
+            <p:card styleClass="module-card" rendered="#{sessionBean.admin}">
 
                 <div class="module-icon">
                     <i class="pi pi-key"></i>
@@ -275,6 +275,31 @@
                         value="Ir a CAI"
                         icon="pi pi-arrow-right"
                         outcome="cai"
+                        styleClass="module-button"/>
+
+            </p:card>
+
+
+            <!-- HISTORIAL FACTURAS -->
+
+            <p:card styleClass="module-card">
+
+                <div class="module-icon">
+                    <i class="pi pi-history"></i>
+                </div>
+
+                <div class="module-title">
+                    Historial de Facturas
+                </div>
+
+                <div class="module-description">
+                    Consulta el historial completo con detalle de cada factura
+                </div>
+
+                <p:button
+                        value="Ver Historial"
+                        icon="pi pi-arrow-right"
+                        outcome="historial_facturas"
                         styleClass="module-button"/>
 
             </p:card>

@@ -1,12 +1,15 @@
 package com.example.sistemafacturacion.beans;
 
 import com.example.sistemafacturacion.data.CAI;
+import com.example.sistemafacturacion.data.Usuario;
 import com.example.sistemafacturacion.interfaces.interactor.CAIInteractor;
 import com.example.sistemafacturacion.services.CAIService;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,11 +32,39 @@ public class CAIBean implements Serializable {
         cargarCAI();
     }
 
+    @PostConstruct
+    public void init() {
+        if (!esAdmin()) {
+            try {
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .redirect("inicio.xhtml");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean esAdmin() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false);
+        if (session != null) {
+            Usuario u = (Usuario) session.getAttribute("usuarioAutenticado");
+            return u != null && u.getIdRol() == 1;
+        }
+        return false;
+    }
+
     public void cargarCAI() {
         this.listaCAI = caiInteractor.listarTodas();
     }
 
     public void guardarCAI() {
+        if (!esAdmin()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Acceso denegado",
+                            "Solo el administrador puede registrar CAI"));
+            return;
+        }
         try {
             CAI cai = new CAI();
             cai.setCai(codigoCAI);

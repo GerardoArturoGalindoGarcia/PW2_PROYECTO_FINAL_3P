@@ -94,12 +94,17 @@ public class FacturaRepositoryImpl implements FacturaRepository {
     @Override
     public List<Factura> obtenerTodas() {
         List<Factura> facturas = new ArrayList<>();
-        String sql = "SELECT * FROM Facturas ORDER BY fechaFactura DESC";
+        String sql = "SELECT f.*, c.nombre AS nombreCliente " +
+                     "FROM Facturas f " +
+                     "LEFT JOIN Clientes c ON f.idCliente = c.idCliente " +
+                     "ORDER BY f.fechaFactura DESC";
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                facturas.add(mapResultSetToFactura(rs));
+                Factura factura = mapResultSetToFactura(rs);
+                factura.setNombreCliente(rs.getString("nombreCliente"));
+                facturas.add(factura);
             }
         } catch (SQLException e) {
             e.printStackTrace();

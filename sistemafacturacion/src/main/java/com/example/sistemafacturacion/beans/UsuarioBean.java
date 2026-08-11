@@ -4,10 +4,12 @@ import com.example.sistemafacturacion.data.Usuario;
 import com.example.sistemafacturacion.interfaces.interactor.UsuarioInteractor;
 import com.example.sistemafacturacion.interfaces.viewmodel.UsuarioViewModel;
 import com.example.sistemafacturacion.services.UsuarioService;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
+import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,10 +24,33 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
     private String nombre;
     private String apellido;
     private String email;
+    private int idRolNuevo = 2;
 
     public UsuarioBean() {
         this.usuarioInteractor = new UsuarioService();
         cargarUsuarios();
+    }
+
+    @PostConstruct
+    public void init() {
+        if (!esAdmin()) {
+            try {
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .redirect("inicio.xhtml");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean esAdmin() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false);
+        if (session != null) {
+            Usuario u = (Usuario) session.getAttribute("usuarioAutenticado");
+            return u != null && u.getIdRol() == 1;
+        }
+        return false;
     }
 
     @Override
@@ -35,6 +60,12 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
 
     @Override
     public void guardarUsuario() {
+        if (!esAdmin()) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Acceso denegado",
+                            "Solo el administrador puede gestionar usuarios"));
+            return;
+        }
         // Si hay un usuario seleccionado (modo edición), actualiza en vez de insertar
         if (usuarioSeleccionado != null) {
             actualizarUsuario();
@@ -47,7 +78,7 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
             usuario.setEmail(email);
-            usuario.setIdRol(1);
+            usuario.setIdRol(idRolNuevo);
             usuario.setEstado("activo");
             usuarioInteractor.registrarUsuario(usuario);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -68,6 +99,7 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
         this.nombre = usuario.getNombre();
         this.apellido = usuario.getApellido();
         this.email = usuario.getEmail();
+        this.idRolNuevo = usuario.getIdRol();
     }
 
     @Override
@@ -121,6 +153,7 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
         nombre = null;
         apellido = null;
         email = null;
+        idRolNuevo = 2;
     }
 
     // Getters and Setters
@@ -149,4 +182,6 @@ public class UsuarioBean implements UsuarioViewModel, Serializable {
     public String getEmail() { return email; }
     @Override
     public void setEmail(String email) { this.email = email; }
+    public int getIdRolNuevo() { return idRolNuevo; }
+    public void setIdRolNuevo(int idRolNuevo) { this.idRolNuevo = idRolNuevo; }
 }
