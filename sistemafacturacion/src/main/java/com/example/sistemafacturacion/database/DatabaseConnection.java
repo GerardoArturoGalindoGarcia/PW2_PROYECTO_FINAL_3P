@@ -8,7 +8,6 @@ import java.sql.Statement;
 
 public class DatabaseConnection {
     private static DatabaseConnection instance;
-    private Connection connection;
     private static final String DB_NAME = "sistemafacturacion.db";
     private static String DB_URL;
 
@@ -32,11 +31,11 @@ public class DatabaseConnection {
             String dbPath = construirRutaBaseDatos();
             DB_URL = "jdbc:sqlite:" + dbPath;
             System.out.println("Conectando a: " + DB_URL);
-            
-            connection = DriverManager.getConnection(DB_URL);
-            System.out.println("Conexión establecida exitosamente");
-            
-            inicializarBaseDatos();
+
+            try (Connection conn = DriverManager.getConnection(DB_URL)) {
+                System.out.println("Conexión establecida exitosamente");
+                inicializarBaseDatos(conn);
+            }
         } catch (SQLException e) {
             System.err.println("ERROR al conectar a la base de datos: " + e.getMessage());
             e.printStackTrace();
@@ -75,18 +74,15 @@ public class DatabaseConnection {
 
     public Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(DB_URL);
-                System.out.println("Reconectado a la base de datos");
-            }
+            return DriverManager.getConnection(DB_URL);
         } catch (SQLException e) {
             System.err.println("ERROR al obtener conexión: " + e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException("No se pudo abrir la conexión a la base de datos", e);
         }
-        return connection;
     }
 
-    private void inicializarBaseDatos() {
+    private void inicializarBaseDatos(Connection connection) {
         try (Statement stmt = connection.createStatement()) {
             // Tabla Roles
             stmt.execute("CREATE TABLE IF NOT EXISTS Roles (" +
@@ -182,12 +178,6 @@ public class DatabaseConnection {
     }
 
     public void closeConnection() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        // Sin estado de conexión compartida que cerrar
     }
 }

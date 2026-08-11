@@ -140,6 +140,17 @@ public class CAIRepositoryImpl implements CAIRepository {
         return null;
     }
 
+    public CAI obtenerCAIActivo(Connection conn) throws SQLException {
+        String sql = "SELECT * FROM CAI WHERE estado = 'activo' LIMIT 1";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return mapResultSetToCAI(rs);
+            }
+        }
+        return null;
+    }
+
     @Override
     public void actualizarSiguienteFactura(int idCAI, int siguiente) {
         // Delegar a la versión con Connection propia

@@ -1,8 +1,12 @@
 package com.example.sistemafacturacion.data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Factura {
+    private static final DateTimeFormatter FECHA_FORMATTER =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     private int idFactura;
     private int numeroFactura;
     private String cai;
@@ -42,6 +46,9 @@ public class Factura {
     public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
     public LocalDateTime getFechaFactura() { return fechaFactura; }
     public void setFechaFactura(LocalDateTime fechaFactura) { this.fechaFactura = fechaFactura; }
+    public String getFechaFacturaFormateada() {
+        return fechaFactura == null ? "" : fechaFactura.format(FECHA_FORMATTER);
+    }
     public double getSubtotal() { return subtotal; }
     public void setSubtotal(double subtotal) { this.subtotal = subtotal; }
     public double getDescuento() { return descuento; }

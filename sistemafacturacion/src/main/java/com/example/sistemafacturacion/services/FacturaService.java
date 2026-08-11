@@ -2,6 +2,7 @@ package com.example.sistemafacturacion.services;
 
 import com.example.sistemafacturacion.data.Factura;
 import com.example.sistemafacturacion.data.DetalleFactura;
+import com.example.sistemafacturacion.data.CAI;
 import com.example.sistemafacturacion.database.FacturaRepositoryImpl;
 import com.example.sistemafacturacion.database.DetalleFacturaRepositoryImpl;
 import com.example.sistemafacturacion.database.CAIRepositoryImpl;
@@ -45,8 +46,7 @@ public class FacturaService implements FacturaInteractor {
             }
 
             // Actualizar siguienteFactura del CAI activo
-            CAIService caiService = new CAIService();
-            com.example.sistemafacturacion.data.CAI caiActivo = caiService.obtenerCAIActivo();
+            CAI caiActivo = caiRepo.obtenerCAIActivo(conn);
             if (caiActivo != null) {
                 int siguiente = caiActivo.getSiguienteFactura() + 1;
                 caiRepo.actualizarSiguienteFactura(conn, caiActivo.getIdCAI(), siguiente);

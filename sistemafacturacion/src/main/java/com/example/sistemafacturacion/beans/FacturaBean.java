@@ -54,6 +54,7 @@ public class FacturaBean implements FacturaViewModel, Serializable {
     // Cliente
     private String criterioCliente;
     private Cliente clienteSeleccionado;
+    private Integer clienteSeleccionadoId;
     private String clienteNoRegistradoNombre;
 
     // CAI
@@ -135,6 +136,7 @@ public class FacturaBean implements FacturaViewModel, Serializable {
         this.detalleActual = new ArrayList<>();
 
         this.clienteSeleccionado = null;
+        this.clienteSeleccionadoId = null;
         this.clienteNoRegistradoNombre = null;
 
         this.productoSeleccionado = null;
@@ -476,6 +478,7 @@ public class FacturaBean implements FacturaViewModel, Serializable {
             this.detalleActual = new ArrayList<>();
 
             this.clienteSeleccionado = null;
+            this.clienteSeleccionadoId = null;
             this.clienteNoRegistradoNombre = null;
 
             this.productoSeleccionado = null;
@@ -505,8 +508,15 @@ public class FacturaBean implements FacturaViewModel, Serializable {
     }
 
     private Cliente resolverClienteParaFactura() {
+        if (clienteSeleccionadoId != null && clienteSeleccionadoId > 0) {
+            Cliente cliente = clienteService.obtenerPorId(clienteSeleccionadoId);
+            if (cliente != null && cliente.getIdCliente() > 0) {
+                return cliente;
+            }
+        }
+
         if (clienteSeleccionado != null && clienteSeleccionado.getIdCliente() > 0) {
-            return clienteSeleccionado;
+            return clienteService.obtenerPorId(clienteSeleccionado.getIdCliente());
         }
 
         if (clienteNoRegistradoNombre == null || clienteNoRegistradoNombre.trim().isEmpty()) {
@@ -629,6 +639,7 @@ public class FacturaBean implements FacturaViewModel, Serializable {
 
         productoSeleccionado = null;
         clienteSeleccionado = null;
+        clienteSeleccionadoId = null;
 
         clienteNoRegistradoNombre = null;
 
@@ -772,6 +783,14 @@ public class FacturaBean implements FacturaViewModel, Serializable {
 
         this.clienteSeleccionado =
                 clienteSeleccionado;
+    }
+
+    public Integer getClienteSeleccionadoId() {
+        return clienteSeleccionadoId;
+    }
+
+    public void setClienteSeleccionadoId(Integer clienteSeleccionadoId) {
+        this.clienteSeleccionadoId = clienteSeleccionadoId;
     }
 
     public String getClienteNoRegistradoNombre() {

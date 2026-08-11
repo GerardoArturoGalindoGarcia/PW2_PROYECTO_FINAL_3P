@@ -35,13 +35,6 @@
             <p:toolbarGroup>
 
                 <p:button
-                        value="Historial Facturas"
-                        icon="pi pi-history"
-                        outcome="historial_facturas"
-                        severity="contrast"
-                        style="margin-right:10px;"/>
-
-                <p:button
                         value="Volver a Inicio"
                         icon="pi pi-home"
                         outcome="inicio"
@@ -140,11 +133,10 @@
                             id="cliente"
                             value="#{facturaBean.clienteSeleccionado}"
                             completeMethod="#{facturaBean.completarClientes}"
-                            converter="clienteConverter"
                             var="c"
                             itemLabel="#{c.nombre}"
                             itemValue="#{c}"
-                            forceSelection="true"
+                            forceSelection="false"
                             dropdown="true"/>
 
 
@@ -223,7 +215,6 @@
                             id="producto"
                             value="#{facturaBean.productoSeleccionado}"
                             completeMethod="#{facturaBean.completarProductos}"
-                            converter="productoConverter"
                             var="p"
                             itemLabel="#{p.nombre}"
                             itemValue="#{p}"
@@ -257,19 +248,17 @@
                             id="precioUnitario"
                             value="#{facturaBean.precioUnitarioLinea}"
                             symbol="L "
-                            decimalPlaces="2"/>
+                            decimalPlaces="2"
+                            disabled="true"/>
 
 
                     <p:outputLabel value=""/>
 
                     <p:commandButton
-                            id="btnAgregarProducto"
                             value="Agregar Producto"
                             icon="pi pi-plus"
-                            action="#{facturaBean.agregarLinea}"
-                            process="@this producto cantidad"
-                            update="detalleTable subtotal total precioUnitario messages"
-                            style="margin-top:10px;"/>
+                            actionListener="#{facturaBean.agregarLinea}"
+                            update="detalleTable subtotal total messages"/>
 
                 </p:panelGrid>
 
@@ -303,7 +292,7 @@
                     <p:column headerText="Producto">
 
                         <h:outputText
-                                value="#{empty d.nombreProducto ? d.idProducto : d.nombreProducto}"/>
+                                value="#{d.idProducto}"/>
 
                     </p:column>
 
@@ -407,18 +396,15 @@
                         value="Crear Factura"
                         icon="pi pi-plus"
                         action="#{facturaBean.crearFactura}"
-                        process="@this"
-                        immediate="true"
                         update="@form"
                         style="margin-top:10px;"/>
 
 
                 <p:commandButton
-                        value="Guardar Factura"
+                        value="Guardar"
                         icon="pi pi-save"
                         action="#{facturaBean.guardarFactura}"
-                        process="@this cliente clienteNoRegistrado descuento"
-                        update="@form dataTableFacturas messages"
+                        update="@form"
                         style="margin-left:10px;margin-top:10px;"/>
 
             </p:card>
@@ -543,7 +529,6 @@
                                     title="Ver"
                                     action="#{facturaBean.obtenerDetalles}"
                                     update="detalleDialog"
-                                    oncomplete="PF('detalleDialogWidget').show()"
                                     styleClass="ui-button-rounded ui-button-text"
                                     style="margin-right:5px;">
 
@@ -597,7 +582,7 @@
                     <p:column headerText="Producto">
 
                         <h:outputText
-                                value="#{empty detalle.nombreProducto ? detalle.idProducto : detalle.nombreProducto}"/>
+                                value="#{detalle.idProducto}"/>
 
                     </p:column>
 

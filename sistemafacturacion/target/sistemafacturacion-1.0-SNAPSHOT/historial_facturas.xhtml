@@ -36,9 +36,7 @@
                 <h:outputText value="#{f.cai}"/>
             </p:column>
             <p:column headerText="Fecha">
-                <h:outputText value="#{f.fechaFactura}">
-                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
-                </h:outputText>
+                <h:outputText value="#{f.fechaFacturaFormateada}"/>
             </p:column>
             <p:column headerText="Total">
                 <h:outputText value="#{f.total}">
