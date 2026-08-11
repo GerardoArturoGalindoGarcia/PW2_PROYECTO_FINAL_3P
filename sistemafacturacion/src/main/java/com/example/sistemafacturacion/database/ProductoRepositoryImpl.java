@@ -101,8 +101,9 @@ public class ProductoRepositoryImpl implements ProductoRepository {
     @Override
     public List<Producto> buscar(String criterio) {
         List<Producto> productos = new ArrayList<>();
-        String sql = "SELECT * FROM Productos WHERE nombre LIKE ? OR descripcion LIKE ? " +
-                     "AND estado = 'activo'";
+        String sql = "SELECT * FROM Productos " +
+                "WHERE (nombre LIKE ? OR descripcion LIKE ?) " +
+                "AND estado = 'activo'";
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             String criterioLike = "%" + criterio + "%";
