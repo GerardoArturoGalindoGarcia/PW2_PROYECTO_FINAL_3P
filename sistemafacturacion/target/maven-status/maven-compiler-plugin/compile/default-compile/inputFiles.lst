@@ -15,16 +15,19 @@ C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\database\CAIRepositoryImpl.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\database\ClienteRepositoryImpl.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\database\DatabaseConnection.java
+C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\database\DetalleFacturaRepositoryImpl.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\database\FacturaRepositoryImpl.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\database\ProductoRepositoryImpl.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\database\UsuarioRepositoryImpl.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\interactor\CAIInteractor.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\interactor\ClienteInteractor.java
+C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\interactor\DetalleFacturaInteractor.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\interactor\FacturaInteractor.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\interactor\ProductoInteractor.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\interactor\UsuarioInteractor.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\repository\CAIRepository.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\repository\ClienteRepository.java
+C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\repository\DetalleFacturaRepository.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\repository\FacturaRepository.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\repository\ProductoRepository.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\repository\UsuarioRepository.java
@@ -34,6 +37,7 @@ C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\interfaces\viewmodel\UsuarioViewModel.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\services\CAIService.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\services\ClienteService.java
+C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\services\DetalleFacturaService.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\services\FacturaService.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\services\ProductoService.java
 C:\Users\WilliamB\Documents\GitHub\PW2_PROYECTO_FINAL_3P\sistemafacturacion\src\main\java\com\example\sistemafacturacion\services\UsuarioService.java
