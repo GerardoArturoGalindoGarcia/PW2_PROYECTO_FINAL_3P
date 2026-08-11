@@ -86,14 +86,14 @@
 
                     <p:outputLabel
                             for="rtn"
-                            value="RTN"/>
+                            value="ID / RTN"/>
 
                     <p:inputText
                             id="rtn"
                             value="#{clienteBean.rtn}"
                             required="true"
-                            requiredMessage="El RTN es requerido"
-                            placeholder="Ingrese el RTN"
+                            requiredMessage="El ID / RTN es requerido"
+                            placeholder="Ingrese el ID / RTN"
                             style="width:100%"/>
 
                     <p:outputLabel
@@ -211,7 +211,7 @@
                     <!-- RTN -->
 
                     <p:column
-                            headerText="RTN">
+                            headerText="ID / RTN">
 
                         <h:outputText
                                 value="#{cliente.rtn}"/>

@@ -148,7 +148,7 @@ public class CAIBean implements Serializable {
     }
 
     public void guardarOActualizarCAI(){
-        if(caiSeleccionado == null){
+        if(caiSeleccionado != null){
             actualizarCAI();
         } else {
             guardarCAI();
